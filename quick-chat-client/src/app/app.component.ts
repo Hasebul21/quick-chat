@@ -17,27 +17,27 @@ export class AppComponent {
   private stompClient: any | undefined;
   userName: string | undefined;
   userEmail: string | undefined;
+  activeUsers: any[] = [];
 
   connectSocket() {
     const socket = new SockJS('http://localhost:8080/ws');
     this.stompClient = Stomp.over(socket);
-    this.stompClient.debug = () => { }; // Disable debug messages
+
     this.stompClient.connect({}, () => {
-        console.log("Connected as " + this.userName);
-        this.stompClient.subscribe(`/queue/whatsapp` , message => {
-          console.log(message)
-          console.log(JSON.parse(message.body))
-        });
+      console.log("Connected as " + this.userName);
 
-        this.stompClient.subscribe(`/topic/public`,  message => {
-          console.log(message)
-          console.log(JSON.parse(message.body))
-        });
+      this.stompClient.send('/app/addUser', { receipt: 'message-receipt' },
+        JSON.stringify({ senderName: this.userName, status: 'SENT' }
 
-        this.stompClient.send('/app/addUser', { },
-          JSON.stringify({ senderName: this.userName, status : 'SENT' }));
-      }, (error) => {
-         console.log(error);
+        ));
+
+      this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
+        console.log(JSON.parse(response.body))
+        this.activeUsers = JSON.parse(response.body)
       });
-    };
+
+    }, (error) => {
+      console.log(error);
+    });
+  };
 }

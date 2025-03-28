@@ -10,7 +10,10 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -31,6 +34,7 @@ public class UserController {
         simpMessageHeaderAccessor.getSessionAttributes().put("username",chatMessage.getSenderId());
         userSession.addUserToSession(newUser);
         chatMessage.setContent(chatMessage.getSenderName() + " has Joined the chat");
+        simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", userSession.getAllUser());
         return chatMessage;
     }
 
@@ -50,4 +54,5 @@ public class UserController {
          */
         return userId + " has leave from the chat";
     }
+
 }

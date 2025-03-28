@@ -5,14 +5,16 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
-@Scope("prototype")
 public class UserSession {
     private final Set<User> userIdCache = new HashSet<>();
 
+
     public Boolean addUserToSession(User user) throws Exception {
+        System.out.println(this.userIdCache);
         if(isIdExist(user))
             throw new Exception(user.getUserId() + " exist in the session");
         userIdCache.add(user);
@@ -35,5 +37,9 @@ public class UserSession {
                 .filter(user -> user.getUserId().equals(userId))
                 .findAny()
                 .orElse(null);
+    }
+
+    public List<User> getAllUser(){
+        return userIdCache.stream().toList();
     }
 }
