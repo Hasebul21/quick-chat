@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { CommonModule } from '@angular/common';
 import { SocketService } from '../service/socket.service';
@@ -13,12 +13,19 @@ import { Stomp } from '@stomp/stompjs';
 })
 export class UserStatusComponent implements OnChanges {
   @Input() activeUsers: any[] = [];
+  @Output() selectedUserEvent : EventEmitter<any> = new EventEmitter<any>();
   private stompClient: any | undefined;
+
   constructor(
     private userService: UserService,
     private sockeService: SocketService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+  }
+
+  selectUser(selectedUser : any){
+    console.log(selectedUser);
+    this.selectedUserEvent.emit(selectedUser);
   }
 }

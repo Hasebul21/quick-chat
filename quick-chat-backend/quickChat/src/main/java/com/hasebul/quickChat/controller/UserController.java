@@ -26,7 +26,7 @@ public class UserController {
 
     @MessageMapping("/addUser")
     @SendTo("/topic/public")
-    public ChatMessage addNewUser(@Payload ChatMessage chatMessage,
+    public User addNewUser(@Payload ChatMessage chatMessage,
                            SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception {
         User newUser = new User();
         newUser.setUserName(chatMessage.getSenderName());
@@ -35,7 +35,7 @@ public class UserController {
         userSession.addUserToSession(newUser);
         chatMessage.setContent(chatMessage.getSenderName() + " has Joined the chat");
         simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", userSession.getAllUser());
-        return chatMessage;
+        return newUser;
     }
 
     @MessageMapping("/removeUser")
