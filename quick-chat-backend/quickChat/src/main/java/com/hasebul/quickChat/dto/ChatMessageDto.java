@@ -7,10 +7,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-public class ChatMessage {
+public class ChatMessageDto {
     private String messageId;
-    private String senderName;
-    private String reciverName;
     private String senderId;
     private String reciverId;
     private String content;
@@ -18,7 +16,7 @@ public class ChatMessage {
     private MessageStatus status;
     private MessageType messageType;
 
-    public ChatMessage() {
+    public ChatMessageDto() {
         this.messageId = UUID.randomUUID().toString();
         this.createdOn = LocalDateTime.now();
     }

@@ -12,6 +12,7 @@ import { Stomp } from '@stomp/stompjs';
   styleUrl: './user-status.component.scss',
 })
 export class UserStatusComponent implements OnChanges {
+  @Input() loginUser: any;
   @Input() activeUsers: any[] = [];
   @Output() selectedUserEvent : EventEmitter<any> = new EventEmitter<any>();
   private stompClient: any | undefined;
@@ -25,7 +26,6 @@ export class UserStatusComponent implements OnChanges {
   }
 
   selectUser(selectedUser : any){
-    console.log(selectedUser);
     this.selectedUserEvent.emit(selectedUser);
   }
 }

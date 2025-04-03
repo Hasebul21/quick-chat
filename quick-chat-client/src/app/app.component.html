@@ -1,65 +1,61 @@
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<div class="container">
+<div class="margin-top-10">
+<div *ngIf="!loginUser; else userLoggedIn">
+    <app-user-login (selectedUserEvent)="setloginUser($event)" (selectedUsernameEvent)="setLoginUserName()"></app-user-login>
+</div>
 
-    <!-- Page header start -->
-    <div class="page-title">
-        <div class="row gutters">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                <h5 class="title">Quick Chats App</h5>
-            </div>
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"> </div>
-        </div>
-    </div>
-    <!-- Page header end -->
+<ng-template class="container margin-top-10" #userLoggedIn>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <div>
-        <input name="username" type="text" 
-        placeholder="Enter your username" 
-        [(ngModel)]="userName"
-        [disabled]="isSelected"/>
-        <input name="email" type="text" 
-        placeholder="Enter your email" 
-        [(ngModel)]="userEmail"
-        [disabled]="isSelected"/>
-        <button (click)="connectSocket()" [disabled]="isSelected">Connect</button>
-        <button (click)="disConnectSocket()" [disabled]="!isSelected">DisConnect</button>
-      </div>
 
-    <!-- Content wrapper start -->
-    <div class="content-wrapper">
-
-        <!-- Row start -->
-        <div class="row gutters">
-
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-
-                <div class="card m-0">
-
-                    <!-- Row start -->
-                    <div class="row no-gutters">
-                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
-                            <app-user-status [activeUsers]="activeUsers" 
-                            (selectedUserEvent)="onUserChangeEvent($event)"></app-user-status>
-                        </div>
-
-                        <!-- Chat Box -->
-
-                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
-                            <app-chat-box *ngIf="selectedUser; else noReload"
-                            [selectedUser]="selectedUser"
-                            [loginUser]="loginUser"
-                            >
-
-                            </app-chat-box>
-                            <ng-template #noReload>
-                                <!-- Display some content when no user is selected -->
-                                <div>
-                                  <p>No user selected. Please select a user to start the chat.</p>
-                                </div>
-                              </ng-template>
+        <!-- Page header start -->
+        <div class="page-title">
+            <div class="row gutters">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                    <h5 class="title">Quick Chats App</h5>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"> </div>
+            </div>
+        </div>
+        <!-- Page header end -->
+    
+        <!-- Content wrapper start -->
+        <div class="content-wrapper">
+    
+            <!-- Row start -->
+            <div class="row gutters">
+    
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    
+                    <div class="card m-0">
+    
+                        <!-- Row start -->
+                        <div class="row no-gutters">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                                <app-user-status [activeUsers]="activeUsers" [loginUser]="loginUser" 
+                                (selectedUserEvent)="onUserChangeEvent($event)"></app-user-status>
+                            </div>
+    
+                            <!-- Chat Box -->
+    
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
+                                <app-chat-box *ngIf="selectedUser; else noReload"
+                                [selectedUser]="selectedUser"
+                                [loginUser]="loginUser"
+                                >
+    
+                                </app-chat-box>
+                                <ng-template #noReload>
+                                    <!-- Display some content when no user is selected -->
+                                    <div>
+                                      <p>No user selected. Please select a user to start the chat.</p>
+                                    </div>
+                                  </ng-template>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</ng-template>
 </div>

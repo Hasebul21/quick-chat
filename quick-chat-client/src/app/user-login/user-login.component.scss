@@ -1,0 +1,100 @@
+/* Full page background */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #e0f7fa; /* Light blue background for the entire page */
+}
+
+/* Container for the login/registration form */
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Responsive max width */
+    text-align: center;
+    position: relative;
+}
+
+/* Heading styling */
+.container h2 {
+    margin-bottom: 20px;
+    color: #007BFF;
+    font-size: 24px;
+}
+
+/* Form group styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input fields with smooth borders */
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    transition: border 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #007BFF; /* Highlight input on focus */
+}
+
+/* Button styling */
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Register section at the bottom */
+.register {
+    margin-top: 20px;
+}
+
+.register a {
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design: Ensure the container is centered on smaller screens */
+@media (max-width: 500px) {
+    .container {
+        padding: 20px;
+    }
+
+    .btn {
+        padding: 10px;
+    }
+}

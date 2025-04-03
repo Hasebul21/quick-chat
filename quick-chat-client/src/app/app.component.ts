@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { Client, IFrame, Stomp } from '@stomp/stompjs';
 import { UserStatusComponent } from "./user-status/user-status.component";
 import { ChatBoxComponent } from "./chat-box/chat-box.component";
@@ -6,12 +6,15 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
 import { CommonModule } from '@angular/common';
+import { UserRegistrationComponent } from "./user-registration/user-registration.component";
+import { UserLoginComponent } from "./user-login/user-login.component";
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule]
+  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, UserLoginComponent, RouterModule]
 })
 export class AppComponent {
   title = 'quick-chat';
@@ -22,8 +25,9 @@ export class AppComponent {
   activeUsers: any[] = [];
   loginUser: any | undefined;
   @Input() selectedUser: any;
+  login = true;
 
-  constructor(){
+  constructor(private cdr: ChangeDetectorRef){
    // this.connectSocket();
   }
 
@@ -35,17 +39,20 @@ export class AppComponent {
       console.log("Connected as " + this.userName);
       this.isSelected = true;
       this.stompClient.send('/app/addUser', { receipt: 'message-receipt' },
-        JSON.stringify({ senderName: this.userName, status: 'SENT' }
+        JSON.stringify({
+          id: this.loginUser.id, 
+          username: this.loginUser.userName,
+          useremail: this.loginUser.userEmail,
+        }
         ));
 
       this.stompClient.subscribe(`/topic/public`, response => {
         const tmp = JSON.parse(response.body);
-        if(this.userName === tmp.userName)
+        if(this.loginUser.userEmail === tmp.useremail)
            this.loginUser = JSON.parse(response.body)
       });
 
       this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
-        console.log(JSON.parse(response.body))
         this.activeUsers = JSON.parse(response.body)
       });
 
@@ -62,7 +69,15 @@ export class AppComponent {
   }
 
   onUserChangeEvent(user: any){
-    console.log(user);
     this.selectedUser = user;
+  }
+
+  setloginUser(user: any){
+    this.loginUser = user;
+    this.connectSocket();
+  }
+
+  setLoginUserName(){
+
   }
 }

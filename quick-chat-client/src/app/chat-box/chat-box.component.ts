@@ -21,8 +21,7 @@ export class ChatBoxComponent implements OnChanges {
   private isSubscribed: boolean = false;
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.selectedUser);
-    if (this.selectedUser && this.selectedUser.userId && !this.isSubscribed) {
+    if (this.selectedUser && !this.isSubscribed) {
       this.connectSocket();
     }
   }
@@ -30,7 +29,6 @@ export class ChatBoxComponent implements OnChanges {
   ngOnDestroy(): void {
     if (this.stompClient) {
       this.stompClient.disconnect();
-      console.log('Disconnected from WebSocket');
     }
   }
 
@@ -39,7 +37,7 @@ export class ChatBoxComponent implements OnChanges {
     const tmp = this.content;
     this.content = '';
     this.addMessageToChat({
-      senderName: this.loginUser.userName,
+      userName: this.loginUser.username,
       content: tmp,
       time: new Date().toLocaleTimeString(),
     }, 'right');
@@ -51,10 +49,8 @@ export class ChatBoxComponent implements OnChanges {
     if (this.stompClient) {
       this.stompClient.send('/app/privateMessage', { receipt: 'message-receipt' },
         JSON.stringify({
-          senderName: this.loginUser.userName,
-          senderId: this.loginUser.userId,
-          reciverName: this.selectedUser.userName,
-          reciverId: this.selectedUser.userId,
+          senderId: this.loginUser.id,
+          reciverId: this.selectedUser.id,
           content: content,
           status: 'SENT'
         }));
@@ -67,7 +63,7 @@ export class ChatBoxComponent implements OnChanges {
 
     this.stompClient.connect({}, () => {
       this.isSubscribed = true;
-      this.stompClient.subscribe(`/user/${this.loginUser.userId}/message/queue`, response => {
+      this.stompClient.subscribe(`/user/${this.loginUser.id}/message/queue`, response => {
         const received = JSON.parse(response.body);
         this.recivedMessage = received;
         this.addMessageToChat(received, 'left');
@@ -79,7 +75,7 @@ export class ChatBoxComponent implements OnChanges {
 
   addMessageToChat(message: any, direction: any) {
     this.messages.push({
-      senderName: message.senderName,
+      userName: message.username,
       content: message.content,
       time: new Date().toLocaleTimeString(),
       direction: direction

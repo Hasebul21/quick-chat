@@ -16,7 +16,7 @@
                     <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
                     <span class="status online"></span>
                 </div>
-                <p class="name-time">
+                <p class="name-time" [ngClass]="{'red-name-time': activeUser.userEmail === loginUser.useremail}">
                     <span class="name">{{activeUser.userName}}</span>
                     <span class="time">15/02/2019</span>
                 </p>
