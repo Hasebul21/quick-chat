@@ -33,10 +33,11 @@ public class UserController {
         newUserDto.setUserName(userDto.getUserName());
         newUserDto.setUserEmail(userDto.getUserEmail());
         simpMessageHeaderAccessor.getSessionAttributes().put("username",newUserDto.getId());
-        //userSession.addUserToSession(newUserDto);
         simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", authService.getAllUser());
+        simpMessagingTemplate.convertAndSend("/topic/public/loggedInUser", newUserDto);
         return newUserDto;
     }
+
 
     @MessageMapping("/removeUser")
     @SendTo("/topic/public")

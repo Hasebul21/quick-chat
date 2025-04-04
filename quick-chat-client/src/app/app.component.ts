@@ -22,6 +22,7 @@ export class AppComponent {
   isSelected = false;
   userName: string | undefined;
   userEmail: string | undefined;
+  userList: any[] = [];
   activeUsers: any[] = [];
   loginUser: any | undefined;
   @Input() selectedUser: any;
@@ -53,7 +54,13 @@ export class AppComponent {
       });
 
       this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
-        this.activeUsers = JSON.parse(response.body)
+        this.userList = JSON.parse(response.body)
+      });
+
+      // /topic/public/loggedInUser
+      this.stompClient.subscribe(`/topic/public/loggedInUser`, response => {
+        this.activeUsers = [...this.activeUsers, JSON.parse(response.body)]
+        //console.log(this.activeUsers);
       });
 
     }, (error) => {

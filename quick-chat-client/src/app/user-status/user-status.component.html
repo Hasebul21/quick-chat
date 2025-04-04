@@ -1,26 +1,28 @@
-<div class="users-container">
-    <div class="chat-search-box">
-        <div class="input-group">
-            <input class="form-control" placeholder="Search">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-info">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
+<div class="users-container chatContainerScroll">
+    <div>
+        <div class="welcome-container">
+            <h2>Welcome, {{ loginUser.userName }}!</h2>
+            <p>We’re glad to have you here. Start exploring and enjoy chatting!</p>
         </div>
-    </div>
-    <ng-container *ngFor="let activeUser of activeUsers">
-        <ul class="users">
-            <li class="person" data-chat="person1" (click)="selectUser(activeUser)">
+    <div>
+        
+    <ng-container *ngFor="let user of userList">
+        <ul class="users-list" *ngIf="user.userEmail !== loginUser.userEmail">
+            <li class="person" (click)="selectUser(user)">
                 <div class="user">
-                    <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+                    <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="User Avatar">
                     <span class="status online"></span>
                 </div>
-                <p class="name-time" [ngClass]="{'red-name-time': activeUser.userEmail === loginUser.userEmail}">
-                    <span class="name">{{activeUser.userName}}</span>
-                    <span class="time">15/02/2019</span>
-                </p>
+                <div class="details">
+                    <p class="name">{{ user.userName }}</p>
+                    <p class="status-text" [ngClass]="isUserActive(user.userEmail) ? 'active-text' : 'inactive-text'">
+                        {{ isUserActive(user.userEmail) ? 'Active' : 'Inactive' }}
+                      </p>
+                    <p class="time">15/02/2019</p>
+                </div>
             </li>
         </ul>
     </ng-container>
+
+    <!-- Welcome Message -->
 </div>

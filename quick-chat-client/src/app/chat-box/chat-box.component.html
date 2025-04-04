@@ -1,26 +1,29 @@
 <div class="selected-user">
-  <span>To: <span class="name">{{selectedUser.userName}}</span></span>
+  <span>To:</span>
+  <span class="name">{{ selectedUser.userName }}</span>
 </div>
+
 <div class="chat-container">
   <ul class="chat-box chatContainerScroll">
-    <li *ngFor="let message of messages" [ngClass]="{'chat-left': message.direction === 'left', 'chat-right': message.direction === 'right'}">
+    <li *ngFor="let message of messages" 
+        [ngClass]="{'chat-left': message.direction === 'left', 'chat-right': message.direction === 'right'}">
+      
       <div class="chat-avatar">
-        <img
-          src="https://www.bootdey.com/img/Content/avatar/avatar3.png"
-          alt="User Avatar"
-        />
-        <div class="chat-name" [ngClass]="{'font-weight-bold': message.direction === 'left'}">
-          {{message.userName}}
-        </div>
+        <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="User Avatar" />
+        <div class="chat-name">{{ message.userName }}</div>
       </div>
-      <div class="chat-text">
-        {{message.content}}
+
+      <div class="chat-text">{{ message.content }}</div>
+      
+      <div class="chat-hour">
+        {{ message.time }} <span class="fa fa-check-circle"></span>
       </div>
-      <div class="chat-hour">{{message.time}} <span class="fa fa-check-circle"></span></div>
     </li>
   </ul>
-  <div class="form-group mt-3 mb-0">
-      <input class="form-control" rows="3" placeholder="Type your message here..." [(ngModel)]="content"/>
-      <button (click)="onMessageSent()">send</button>
+
+  <!-- Chat Input Field -->
+  <div class="chat-input-container">
+    <input class="form-control chat-input" placeholder="Type your message here..." [(ngModel)]="content"/>
+    <button class="btn btn-primary send-btn" (click)="onMessageSent()">Send</button>
   </div>
 </div>
