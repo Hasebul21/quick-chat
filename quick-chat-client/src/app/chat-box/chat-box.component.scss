@@ -1,0 +1,36 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 500px; /* Adjust this value based on your layout */
+    overflow: hidden;
+    border: 1px solid #ccc;
+  }
+  
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    max-height: 100%;
+  }
+  
+  .chat-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    max-height: 450px; /* Adjust the height to fit within the container */
+  }
+  
+  .chat-box::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .chat-box::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 3px;
+  }
+  
+  .chat-box::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+  }
+  

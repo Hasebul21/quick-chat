@@ -1,39 +1,44 @@
 package com.hasebul.quickChat.service;
 
-import com.hasebul.quickChat.dto.User;
-import org.springframework.context.annotation.Scope;
+import com.hasebul.quickChat.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
-@Scope("prototype")
 public class UserSession {
-    private final Set<User> userIdCache = new HashSet<>();
+    private final Set<UserDto> userIdCache = new HashSet<>();
 
-    public Boolean addUserToSession(User user) throws Exception {
-        if(isIdExist(user))
-            throw new Exception(user.getUserId() + " exist in the session");
-        userIdCache.add(user);
+
+    public Boolean addUserToSession(UserDto userDto) throws Exception {
+        System.out.println(this.userIdCache);
+        if(isIdExist(userDto))
+            throw new Exception(userDto.getId() + " exist in the session");
+        userIdCache.add(userDto);
         return true;
     }
 
-    public Boolean removeUserFromSession(User user) throws Exception{
-        if(!isIdExist(user))
-            throw new Exception(user.getUserId() + " does not exist in the session");
-        userIdCache.remove(user);
+    public Boolean removeUserFromSession(UserDto userDto) throws Exception{
+        if(!isIdExist(userDto))
+            throw new Exception(userDto.getId() + " does not exist in the session");
+        userIdCache.remove(userDto);
         return true;
     }
 
-    public boolean isIdExist(User user){
+    public boolean isIdExist(UserDto user){
         return userIdCache.contains(user);
     }
 
-    public User findUserById(String userId){
+    public UserDto findUserById(String userId){
         return userIdCache.stream()
-                .filter(user -> user.getUserId().equals(userId))
+                .filter(user -> user.getId().equals(userId))
                 .findAny()
                 .orElse(null);
+    }
+
+    public List<UserDto> getAllUser(){
+        return userIdCache.stream().toList();
     }
 }
