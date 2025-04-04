@@ -1,5 +1,6 @@
 package com.hasebul.quickChat.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hasebul.quickChat.dto.MessageStatus;
 import com.hasebul.quickChat.dto.MessageType;
@@ -11,6 +12,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Document(indexName = "chat_messages")
@@ -25,29 +28,18 @@ public class ChatMessage {
     private String senderName;
 
     @Field(type = FieldType.Keyword)
-    private String reciverName;
+    private String receiverName;
 
     @Field(type = FieldType.Keyword)
     private String senderId;
 
     @Field(type = FieldType.Keyword)
-    private String reciverId;
+    private String receiverId;
 
-    @Field(type = FieldType.Keyword)
-    private String reciverEmail;
-
-    @Field(type = FieldType.Keyword)
-    private String senderEmail;
 
     @Field(type = FieldType.Text)
     private String content;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
-    private LocalDateTime createdOn;
-
     @Field(type = FieldType.Keyword)
-    private MessageStatus status;
-
-    @Field(type = FieldType.Keyword)
-    private MessageType messageType;
+    private String createdOn;
 }

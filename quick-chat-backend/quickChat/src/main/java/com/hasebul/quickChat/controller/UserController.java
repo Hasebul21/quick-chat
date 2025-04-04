@@ -30,8 +30,8 @@ public class UserController {
                               SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception {
         UserDto newUserDto = new UserDto();
         newUserDto.setId(userDto.getId());
-        newUserDto.setUsername(userDto.getUsername());
-        newUserDto.setUseremail(userDto.getUseremail());
+        newUserDto.setUserName(userDto.getUserName());
+        newUserDto.setUserEmail(userDto.getUserEmail());
         simpMessageHeaderAccessor.getSessionAttributes().put("username",newUserDto.getId());
         //userSession.addUserToSession(newUserDto);
         simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", authService.getAllUser());

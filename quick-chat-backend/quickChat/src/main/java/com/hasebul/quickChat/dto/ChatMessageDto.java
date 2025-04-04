@@ -1,23 +1,20 @@
 package com.hasebul.quickChat.dto;
 
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ChatMessageDto {
     private String messageId;
     private String senderId;
-    private String reciverId;
+    private String receiverId;
+    private String senderName;
+    private String receiverName;
     private String content;
     private LocalDateTime createdOn;
-    private MessageStatus status;
-    private MessageType messageType;
-
-    public ChatMessageDto() {
-        this.messageId = UUID.randomUUID().toString();
-        this.createdOn = LocalDateTime.now();
-    }
 }

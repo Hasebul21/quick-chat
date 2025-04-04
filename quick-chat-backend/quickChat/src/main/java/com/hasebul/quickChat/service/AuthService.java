@@ -16,7 +16,7 @@ public class AuthService {
     private AuthRepo authRepo;
 
     public Users persistUser(UserDto userDto){
-        Users user = new Users(userDto.getUsername(),userDto.getPassword() ,userDto.getUseremail());
+        Users user = new Users(userDto.getUserName(),userDto.getPassword() ,userDto.getUserEmail());
         return authRepo.save(user);
     }
 

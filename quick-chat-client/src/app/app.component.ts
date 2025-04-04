@@ -41,14 +41,14 @@ export class AppComponent {
       this.stompClient.send('/app/addUser', { receipt: 'message-receipt' },
         JSON.stringify({
           id: this.loginUser.id, 
-          username: this.loginUser.userName,
-          useremail: this.loginUser.userEmail,
+          userName: this.loginUser.userName,
+          userEmail: this.loginUser.userEmail,
         }
         ));
 
       this.stompClient.subscribe(`/topic/public`, response => {
         const tmp = JSON.parse(response.body);
-        if(this.loginUser.userEmail === tmp.useremail)
+        if(this.loginUser.userEmail === tmp.userEmail)
            this.loginUser = JSON.parse(response.body)
       });
 
