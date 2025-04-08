@@ -20,7 +20,7 @@ QuickChat is a real-time chat application built with a modern tech stack includi
 - **Caching**: Redis
 - **Deployment**: Docker
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack Overview
 
 - **Elasticsearch** – Enables full-text search functionality for chat messages.  
 - **WebSocket** – Powers real-time, bidirectional communication for instant messaging.  
