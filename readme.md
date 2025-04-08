@@ -20,6 +20,15 @@ QuickChat is a real-time chat application built with a modern tech stack includi
 - **Caching**: Redis
 - **Deployment**: Docker
 
+## 🛠 Tech Stack
+
+- **Elasticsearch** – Enables full-text search functionality for chat messages.  
+- **WebSocket** – Powers real-time, bidirectional communication for instant messaging.  
+- **Redis** – Used for caching active users and temporarily storing messages. A scheduled cron job persists these messages to the database.  
+- **Spring Boot & Angular** – Backend and frontend frameworks for developing the application’s server-side logic and user interface.  
+- **PostgreSQL** – Serves as the primary relational database for storing user data and chat history.
+
+
 ## Requirements
 
 Before you start, ensure you have the following installed on your machine:
