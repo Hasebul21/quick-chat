@@ -1,15 +1,16 @@
 package com.hasebul.quickChat.event;
 
 import com.hasebul.quickChat.dto.LoginDto;
+import com.hasebul.quickChat.model.Users;
 
 public class UserLogoutEvent {
-    private final LoginDto loginDto;
+    private final Users user;
 
-    public UserLogoutEvent(LoginDto loginDto) {
-        this.loginDto = loginDto;
+    public UserLogoutEvent(Users user) {
+        this.user = user;
     }
 
-    public LoginDto getLoginDto() {
-        return loginDto;
+    public Users getUser() {
+        return user;
     }
 }

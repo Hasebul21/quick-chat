@@ -32,8 +32,10 @@ public class AuthService {
 
     public Users getUserByUserNameAndPassword(String useremail, String password) throws Exception {
         Optional<Users> users = authRepo.findByUserEmailAndPassword(useremail, password);
-        if(users.isEmpty())
-            throw new Exception("User Not Found");
-        return users.get();
+        return users.orElse(null);
+    }
+
+    public Users findUserByEmail(String email) {
+        return authRepo.findByUserEmail(email).orElse(null);
     }
 }

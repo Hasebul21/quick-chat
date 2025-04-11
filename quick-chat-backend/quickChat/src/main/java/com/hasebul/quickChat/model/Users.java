@@ -28,4 +28,18 @@ public class Users {
         this.userEmail = userEmail;
         this.password = password;
     }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof Users))
+            return false;
+        Users otherUser = (Users) obj;
+        return id != null && id.equals(otherUser.id);
+    }
 }
