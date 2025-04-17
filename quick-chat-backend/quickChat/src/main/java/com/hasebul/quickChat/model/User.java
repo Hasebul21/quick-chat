@@ -1,29 +1,26 @@
 package com.hasebul.quickChat.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "users")
-public class Users {
+public class User {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String userEmail;
     private String userName;
     private String password;
 
-    public Users(String userName, String password, String userEmail){
+    public User(String userName, String password, String userEmail){
         this.userName = userName;
         this.userEmail = userEmail;
         this.password = password;
@@ -37,9 +34,9 @@ public class Users {
     @Override
     public boolean equals(Object obj) {
         if(this == obj) return true;
-        if(!(obj instanceof Users))
+        if(!(obj instanceof User))
             return false;
-        Users otherUser = (Users) obj;
+        User otherUser = (User) obj;
         return id != null && id.equals(otherUser.id);
     }
 }

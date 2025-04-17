@@ -1,6 +1,6 @@
 package com.hasebul.quickChat.service;
 
-import com.hasebul.quickChat.model.Users;
+import com.hasebul.quickChat.model.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,21 +10,21 @@ import java.util.Set;
 
 @Component
 public class ActiveUserSession {
-    private final Set<Users> usersSet;
+    private final Set<User> userSet;
 
     public ActiveUserSession() {
-        this.usersSet = new HashSet<>();
+        this.userSet = new HashSet<>();
     }
 
-    public void addUser(Users user) {
-        usersSet.add(user);
+    public void addUser(User user) {
+        userSet.add(user);
     }
 
-    public void removeUser(Users user) {
-        usersSet.remove(user);
+    public void removeUser(User user) {
+        userSet.remove(user);
     }
 
-    public List<Users> getActiveUsers() {
-        return new ArrayList<>(usersSet);
+    public List<User> getActiveUsers() {
+        return new ArrayList<>(userSet);
     }
 }

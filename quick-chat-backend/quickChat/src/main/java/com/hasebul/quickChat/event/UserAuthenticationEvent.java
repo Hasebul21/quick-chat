@@ -2,28 +2,30 @@ package com.hasebul.quickChat.event;
 
 import com.hasebul.quickChat.dto.LoginDto;
 import com.hasebul.quickChat.service.ActiveUserSession;
+import com.hasebul.quickChat.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserAuthenticationEvent {
-
     @Autowired
-    private ActiveUserSession activeUserSession;
+    private RedisService redisService;
 
     @EventListener
     @Async
     public void UserLoginEvent(UserLoginEvent userLoginEvent) {
         System.out.println("User Login Event Triggered");
-        activeUserSession.addUser(userLoginEvent.getUser());
+        redisService.addActiveUser(userLoginEvent.getUser());
     }
 
     @EventListener
     @Async
     public void UserLogoutEvent(UserLogoutEvent userLogoutEvent) {
         System.out.println("User Logout Event Triggered");
-        activeUserSession.removeUser(userLogoutEvent.getUser());
+        redisService.removeActiveUser(userLogoutEvent.getUser());
     }
 }
