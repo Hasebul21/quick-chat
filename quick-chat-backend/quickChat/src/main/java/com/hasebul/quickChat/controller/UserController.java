@@ -1,58 +1,48 @@
 package com.hasebul.quickChat.controller;
 
-import com.hasebul.quickChat.dto.ChatMessageDto;
 import com.hasebul.quickChat.dto.UserDto;
-import com.hasebul.quickChat.service.AuthService;
-import com.hasebul.quickChat.service.UserSession;
+import com.hasebul.quickChat.model.User;
+import com.hasebul.quickChat.service.RedisService;
+import com.hasebul.quickChat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserController {
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private UserService userService;
 
     @Autowired
-    private UserSession userSession;
+    private RedisService redisService;
 
-    @Autowired
-    private AuthService authService;
 
-    @MessageMapping("/addUser")
-    @SendTo("/topic/public")
-    public UserDto addNewUser(@Payload UserDto userDto,
-                              SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception {
-        UserDto newUserDto = new UserDto();
-        newUserDto.setId(userDto.getId());
-        newUserDto.setUserName(userDto.getUserName());
-        newUserDto.setUserEmail(userDto.getUserEmail());
-        simpMessageHeaderAccessor.getSessionAttributes().put("username",newUserDto.getId());
-        //userSession.addUserToSession(newUserDto);
-        simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", authService.getAllUser());
-        return newUserDto;
+    @PostMapping("auth/users")
+    public ResponseEntity<?> persistUser(@RequestBody  UserDto userDto){
+        User user = userService.persistUser(userDto);
+        if(user == null)
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("User already exists");
+        return ResponseEntity.ok(user);
     }
 
-    @MessageMapping("/removeUser")
-    @SendTo("/topic/public")
-    public String removeUser(@Payload ChatMessageDto chatMessage,
-                             SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
-
-        String userId = (String) simpMessageHeaderAccessor.getSessionAttributes().get("username");
-        simpMessageHeaderAccessor.getSessionAttributes().remove("username");
-        /*
-            Find the user By userId querying in elastic search
-         */
-        // userSession.removeUserFromSession(userSession.findUserById(userId));
-        /*
-           Find the user name By querying in elastic search
-         */
-        return userId + " has leave from the chat";
+    @GetMapping("auth/users")
+    public List<User> getAllUser(){
+        return userService.getAllUser();
     }
 
+    @GetMapping("auth/users/{id}")
+    public User getUserById(@PathVariable("id") Long id){
+        return userService.getUserById(id);
+    }
+
+    @GetMapping("auth/users/active")
+    public List<User> getActiveUsers() {
+        return redisService.getActiveUsers();
+    }
 }

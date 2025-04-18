@@ -1,0 +1,66 @@
+package com.hasebul.quickChat.service;
+
+import com.hasebul.quickChat.dto.LoginDto;
+import com.hasebul.quickChat.dto.UserDto;
+import com.hasebul.quickChat.event.UserLoginEvent;
+import com.hasebul.quickChat.event.UserLogoutEvent;
+import com.hasebul.quickChat.model.User;
+import com.hasebul.quickChat.repository.AuthRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private AuthRepo authRepo;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    public User persistUser(UserDto userDto) {
+        User user = new User(userDto.getUserName(), userDto.getPassword(), userDto.getUserEmail());
+        try {
+            return authRepo.save(user);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<User> getAllUser() {
+        List<User> userList = authRepo.findAll();
+        return userList;
+    }
+
+    public User getUserById(Long id) {
+        User user = authRepo.findById(id).get();
+        return user;
+    }
+
+    public User getUserByUserNameAndPassword(String useremail, String password) throws Exception {
+        Optional<User> users = authRepo.findByUserEmailAndPassword(useremail, password);
+        return users.orElse(null);
+    }
+
+    public User findUserByEmail(String email) {
+
+        return authRepo.findByUserEmail(email).orElse(null);
+    }
+
+    public User login(LoginDto loginDto) throws Exception {
+        User user = getUserByUserNameAndPassword(loginDto.getUserEmail(), loginDto.getPassword());
+        if (user == null)
+            return null;
+        eventPublisher.publishEvent(new UserLoginEvent(user));
+        return user;
+    }
+
+    public void logout(LoginDto loginDto) throws Exception {
+        User user = findUserByEmail(loginDto.getUserEmail());
+        eventPublisher.publishEvent(new UserLogoutEvent(user));
+    }
+}

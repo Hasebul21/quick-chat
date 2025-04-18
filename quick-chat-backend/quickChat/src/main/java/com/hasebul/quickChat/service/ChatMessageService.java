@@ -8,6 +8,7 @@ import com.hasebul.quickChat.dto.ChatMessageDto;
 import com.hasebul.quickChat.model.ChatMessage;
 import com.hasebul.quickChat.repository.ChatMessageRepo;
 import com.hasebul.quickChat.utils.ElasticSearchUtils;
+import com.hasebul.quickChat.utils.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,15 +30,8 @@ public class ChatMessageService {
     private ElasticsearchClient elasticsearchClient;
 
     public void saveMessage(ChatMessageDto chatMessageDto){
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setMessageId(chatMessageDto.getMessageId());
-        chatMessage.setSenderId(chatMessageDto.getSenderId());
-        chatMessage.setSenderName(chatMessageDto.getSenderName());
-        chatMessage.setReceiverId(chatMessageDto.getReceiverId());
-        chatMessage.setReceiverName(chatMessageDto.getReceiverName());
-        chatMessage.setContent(chatMessageDto.getContent());
-        chatMessage.setCreatedOn(LocalDateTime.now().toString());
-        chatMessageRepo.save(chatMessage);
+        ChatMessage chatEntity = Helper.mapChatDtoToChatEntity(chatMessageDto);
+        chatMessageRepo.save(chatEntity);
    }
 
    public List<ChatMessage> chatMessageList(String senderId, String receiverId) throws IOException {
