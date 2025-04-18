@@ -1,0 +1,27 @@
+<div class="chatroom-container">
+  <div class="chatroom-body">
+    <!-- User List / Sidebar -->
+    <div class="user-list">
+      <app-user-status
+        [activeUsers]="activeUsers"
+        [loginUser]="loginUser"
+        (selectedUserEvent)="onUserChangeEvent($event)">
+      </app-user-status>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window">
+      <app-chat-box
+        *ngIf="selectedUser; else noUserSelected"
+        [selectedUser]="selectedUser"
+        [loginUser]="loginUser">
+      </app-chat-box>
+
+      <ng-template #noUserSelected>
+        <div class="no-user">
+          <p>Select a user to start chatting 💬</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

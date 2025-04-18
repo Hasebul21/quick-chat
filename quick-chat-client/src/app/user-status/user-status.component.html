@@ -1,26 +1,31 @@
 <div class="users-container">
-    <div class="chat-search-box">
-        <div class="input-group">
-            <input class="form-control" placeholder="Search">
-            <div class="input-group-btn">
-                <button type="button" class="btn btn-info">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
-        </div>
+  <!-- Search Box -->
+  <div class="chat-search-box">
+    <div class="search-input-group">
+      <input class="form-control" placeholder="Search" />
+      <button type="button" class="btn-search">
+        <i class="fa fa-search"></i>
+      </button>
     </div>
+  </div>
+
+  <!-- User List -->
+  <ul class="users-list">
     <ng-container *ngFor="let activeUser of activeUsers">
-        <ul class="users">
-            <li class="person" data-chat="person1" (click)="selectUser(activeUser)">
-                <div class="user">
-                    <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
-                    <span class="status online"></span>
-                </div>
-                <p class="name-time" [ngClass]="{'red-name-time': activeUser.userEmail === loginUser.userEmail}">
-                    <span class="name">{{activeUser.userName}}</span>
-                    <span class="time">15/02/2019</span>
-                </p>
-            </li>
-        </ul>
+      <li
+        class="user-item"
+        (click)="selectUser(activeUser)"
+        [ngClass]="{ 'current-user': activeUser.userEmail === loginUser.userEmail }"
+      >
+        <div class="user-avatar">
+          <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="User avatar" />
+          <span class="status online"></span>
+        </div>
+        <div class="user-details">
+          <span class="name">{{ activeUser.userName }}</span>
+          <span class="time">15/02/2019</span>
+        </div>
+      </li>
     </ng-container>
+  </ul>
 </div>

@@ -1,24 +1,30 @@
 <body>
-    <div class="container">
-        <h2>Register</h2>
-        <form>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" [(ngModel)]="username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" [(ngModel)]="useremail" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" [(ngModel)]="password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" [(ngModel)]="confirmPassword" required>
-            </div>
-            <button type="submit" class="btn" (click)="persistUser()">Register</button>
-        </form>
+  <div class="container">
+    <div class="register-box">
+      <h2>Register</h2>
+      <form>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" [(ngModel)]="username" required placeholder="Enter your username">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" [(ngModel)]="useremail" required placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="Enter your password">
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" [(ngModel)]="confirmPassword" required placeholder="Confirm your password">
+        </div>
+
+        <button type="submit" class="btn" (click)="persistUser()">Register</button>
+      </form>
     </div>
+  </div>
 </body>

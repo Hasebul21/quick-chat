@@ -1,115 +1,103 @@
-
- .person {
-    position: relative;
-    width: 100%;
-    padding: 10px 1rem;
-    cursor: pointer;
-    border-bottom: 1px solid #f0f4f8;
+.users-container {
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  height: 80%;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
 }
 
- .person:hover {
-    background-color: #ffffff;
-    /* Fallback Color */
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#e9eff5), to(#ffffff));
-    /* Saf4+, Chrome */
-    background-image: -webkit-linear-gradient(right, #e9eff5, #ffffff);
-    /* Chrome 10+, Saf5.1+, iOS 5+ */
-    background-image: -moz-linear-gradient(right, #e9eff5, #ffffff);
-    /* FF3.6 */
-    background-image: -ms-linear-gradient(right, #e9eff5, #ffffff);
-    /* IE10 */
-    background-image: -o-linear-gradient(right, #e9eff5, #ffffff);
-    /* Opera 11.10+ */
-    background-image: linear-gradient(right, #e9eff5, #ffffff);
+.chat-search-box {
+  margin-bottom: 1rem;
 }
 
- .person.active-user {
-    background-color: #ffffff;
-    /* Fallback Color */
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#f7f9fb), to(#ffffff));
-    /* Saf4+, Chrome */
-    background-image: -webkit-linear-gradient(right, #f7f9fb, #ffffff);
-    /* Chrome 10+, Saf5.1+, iOS 5+ */
-    background-image: -moz-linear-gradient(right, #f7f9fb, #ffffff);
-    /* FF3.6 */
-    background-image: -ms-linear-gradient(right, #f7f9fb, #ffffff);
-    /* IE10 */
-    background-image: -o-linear-gradient(right, #f7f9fb, #ffffff);
-    /* Opera 11.10+ */
-    background-image: linear-gradient(right, #f7f9fb, #ffffff);
+.search-input-group {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
- .person:last-child {
-    border-bottom: 0;
+.search-input-group input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
 }
 
- .person .user {
-    display: inline-block;
-    position: relative;
-    margin-right: 10px;
+.btn-search {
+  background-color: #1976d2;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
- .person .user img {
-    width: 48px;
-    height: 48px;
-    -webkit-border-radius: 50px;
-    -moz-border-radius: 50px;
-    border-radius: 50px;
+.btn-search:hover {
+  background-color: #125aa1;
 }
 
- .person .user .status {
-    width: 10px;
-    height: 10px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: #e6ecf3;
-    position: absolute;
-    top: 0;
-    right: 0;
+.users-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
- .person .user .status.online {
-    background: #9ec94a;
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
- .person .user .status.offline {
-    background: #c4d2e2;
+.user-item:hover {
+  background-color: #f0f4f8;
 }
 
- .person .user .status.away {
-    background: #f9be52;
+.user-item.current-user {
+  background-color: #e3f2fd;
 }
 
- .person .user .status.busy {
-    background: #fd7274;
+.user-avatar {
+  position: relative;
+  margin-right: 10px;
 }
 
- .person p.name-time {
-    font-weight: 600;
-    font-size: .85rem;
-    display: inline-block;
+.user-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
- .person p.name-time .time {
-    font-weight: 400;
-    font-size: .7rem;
-    text-align: right;
-    color: #8796af;
+.status.online {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background-color: #4caf50;
+  border: 2px solid #fff;
+  border-radius: 50%;
 }
 
-@media (max-width: 767px) {
-     .person .user img {
-        width: 30px;
-        height: 30px;
-    }
-     .person p.name-time {
-        display: none;
-    }
-     .person p.name-time .time {
-        display: none;
-    }
+.user-details {
+  display: flex;
+  flex-direction: column;
 }
-.red-name-time {
-    color: red;
+
+.name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: #999;
 }
