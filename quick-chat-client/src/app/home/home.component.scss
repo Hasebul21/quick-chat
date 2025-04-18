@@ -11,50 +11,6 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Toolbar */
-.toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-  padding: 0 24px;
-  background-color: #ffffff !important;
-  color: #3f51b5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.app-name {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.nav-links {
-  display: flex;
-  gap: 16px;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #3f51b5;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.nav-link:hover {
-  color: #303f9f;
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.user-profile .profile-image {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
 
 /* Layout container */
 .layout-container {

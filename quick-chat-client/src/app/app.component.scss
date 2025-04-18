@@ -1,26 +1,86 @@
-/* Styling the input fields */
-input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0 15px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+/* General toolbar styling */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 70px;
+  background-color: #212121; /* Dark background */
+  font-family: 'Roboto', sans-serif;
 }
 
-/* Styling the button */
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+/* App Name Section */
+.app-name {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #f0f0f0; /* Light grey color */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
 }
 
-.margin-top-10 {
-    margin-top: 300px;
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+  font-size: 1.2em;
+}
+
+.nav-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ff4081; /* Pink color on hover */
+  transform: translateY(-2px); /* Small hover animation */
+}
+
+/* User Profile Section */
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff; /* White border around profile image */
+}
+
+.username {
+  color: #f0f0f0;
+  font-size: 1.1em;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+/* Logout Button */
+.logout-btn {
+  font-size: 0.95em;
+  color: #f0f0f0;
+  background-color: transparent;
+  border: 1px solid #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.logout-btn:hover {
+  background-color: #ff4081;
+  color: #fff;
+  border-color: #ff4081;
+}
+
+.logout-btn:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 64, 129, 0.5); /* Glow effect on focus */
 }

@@ -1,0 +1,54 @@
+.chatroom-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  padding: 0;
+  margin: 0;
+  background-color: #f4f4f4;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.chatroom-header {
+  background-color: #1976d2;
+  color: white;
+  padding: 16px 24px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chatroom-body {
+  display: flex;
+  flex: 1;
+  padding: 16px;
+  gap: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.user-list {
+  width: 25%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  overflow-y: auto;
+}
+
+.chat-window {
+  flex: 1;
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.no-user {
+  margin: auto;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #777;
+}
