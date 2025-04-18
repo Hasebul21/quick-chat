@@ -9,12 +9,13 @@ import { CommonModule } from '@angular/common';
 import { UserRegistrationComponent } from "./user-registration/user-registration.component";
 import { UserLoginComponent } from "./user-login/user-login.component";
 import { RouterModule } from '@angular/router';
+import { HomeComponent } from "./home/home.component";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, UserLoginComponent, RouterModule]
+  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, UserLoginComponent, RouterModule, HomeComponent]
 })
 export class AppComponent {
   title = 'quick-chat';
@@ -23,12 +24,12 @@ export class AppComponent {
   userName: string | undefined;
   userEmail: string | undefined;
   activeUsers: any[] = [];
-  loginUser: any | undefined;
+  loginUser: any | undefined = {};
   @Input() selectedUser: any;
-  login = true;
+  login = false;
 
-  constructor(private cdr: ChangeDetectorRef){
-   // this.connectSocket();
+  constructor(private cdr: ChangeDetectorRef) {
+    // this.connectSocket();
   }
 
   connectSocket() {
@@ -40,7 +41,7 @@ export class AppComponent {
       this.isSelected = true;
       this.stompClient.send('/app/addUser', { receipt: 'message-receipt' },
         JSON.stringify({
-          id: this.loginUser.id, 
+          id: this.loginUser.id,
           userName: this.loginUser.userName,
           userEmail: this.loginUser.userEmail,
         }
@@ -48,8 +49,8 @@ export class AppComponent {
 
       this.stompClient.subscribe(`/topic/public`, response => {
         const tmp = JSON.parse(response.body);
-        if(this.loginUser.userEmail === tmp.userEmail)
-           this.loginUser = JSON.parse(response.body)
+        if (this.loginUser.userEmail === tmp.userEmail)
+          this.loginUser = JSON.parse(response.body)
       });
 
       this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
@@ -61,23 +62,23 @@ export class AppComponent {
     });
   };
 
-  disConnectSocket(){
+  disConnectSocket() {
     this.isSelected = false;
     this.userEmail = '';
     this.userName = '';
     this.loginUser = undefined;
   }
 
-  onUserChangeEvent(user: any){
+  onUserChangeEvent(user: any) {
     this.selectedUser = user;
   }
 
-  setloginUser(user: any){
+  setloginUser(user: any) {
     this.loginUser = user;
     this.connectSocket();
   }
 
-  setLoginUserName(){
+  setLoginUserName() {
 
   }
 }
