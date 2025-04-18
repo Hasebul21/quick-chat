@@ -144,6 +144,7 @@ export class HomeComponent {
     }
   ];
 
+
   currentPage: number = 1;
   postsPerPage: number = 6;
   totalPages: number = Math.ceil(this.posts.length / this.postsPerPage);

@@ -3,6 +3,7 @@ import { UserRegistrationComponent } from './user-registration/user-registration
 import { UserLoginComponent } from './user-login/user-login.component';
 import { ChatRoomComponent } from './chat-room/chat-room.component';
 import { HomeComponent } from './home/home.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 export const routes: Routes = [
     { path: 'register', component: UserRegistrationComponent },
@@ -10,6 +11,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'chatroom', component: ChatRoomComponent },
     { path: 'register', component: UserRegistrationComponent },
+    { path: 'profile', component: UserProfileComponent },
 
     // ✅ Redirect empty path to /home
     { path: '', redirectTo: '/home', pathMatch: 'full' }

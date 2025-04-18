@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Update</title>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Update Profile</h2>
+        <form id="updateProfileForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="john.doe@example.com" required>
+
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" placeholder="New York, USA" required>
+
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" placeholder="Passionate about building scalable web apps..." required></textarea>
+
+            <label for="skills">Skills</label>
+            <input type="text" id="skills" name="skills" placeholder="JavaScript, Angular, Node.js" required>
+
+            <label for="hobbies">Hobbies</label>
+            <input type="text" id="hobbies" name="hobbies" placeholder="Traveling, Photography, Open Source Contributions" required>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

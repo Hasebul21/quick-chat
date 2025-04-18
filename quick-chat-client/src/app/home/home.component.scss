@@ -21,51 +21,111 @@ html, body {
   overflow: hidden;
 }
 
-/* Sidebar */
+/* Profile Section */
 .profile-section {
-  flex: 1;
-  max-width: 320px;
-  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 
 .profile-card {
-  background-color: #ffffff;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
   border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Profile Header */
 .profile-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 20px;
 }
 
-.profile-header .profile-image {
-  width: 64px;
-  height: 64px;
+.profile-image {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3f51b5;
 }
 
-.header-info .username {
-  font-size: 20px;
-  font-weight: 600;
+.header-info {
+  flex: 1;
+}
+
+.username {
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #333;
 }
 
 .role {
-  font-size: 14px;
+  font-size: 1.1em;
   color: #666;
+  margin-top: 5px;
 }
 
+/* Divider Styling */
+mat-divider {
+  margin: 20px 0;
+}
+
+/* Profile Details */
 .profile-details p {
-  font-size: 14px;
-  margin: 6px 0;
+  font-size: 1em;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.profile-details strong {
+  color: #3f51b5;
+}
+
+/* Link Styling */
+.profile-details a {
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+.profile-details a:hover {
+  text-decoration: underline;
+}
+
+/* Actions Section */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.edit-button, .logout-button {
+  font-size: 1em;
+  padding: 10px 20px;
+  border-radius: 25px;
 }
 
 .edit-button {
-  margin-top: 16px;
-  width: 100%;
+  background-color: #3f51b5;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #303f9f;
+}
+
+.logout-button {
+  background-color: #f44336;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
 }
 
 /* Main feed */
