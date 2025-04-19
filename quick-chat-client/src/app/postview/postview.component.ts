@@ -16,6 +16,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { AuthService } from '../service/auth-service';
 
 @Component({
   selector: 'app-postview',
@@ -48,6 +49,7 @@ export class PostviewComponent {
   allFilteredPosts: any[] = []; // Store full filtered results
   filteredPosts: any[] = [];
   showFilterOptions = false;
+  loggedInUser: any = null;
 
   filter = {
     creatorName: null,
@@ -70,9 +72,12 @@ export class PostviewComponent {
     }
   };
 
-  constructor(private postService: PostService) {}
+  constructor(private postService: PostService,
+              private authService : AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.loggedInUser = this.authService.getLoggedInUser();
     this.loadPosts();
   }
 
@@ -147,6 +152,28 @@ export class PostviewComponent {
     this.showFilterOptions = false;
     this.loadPosts();
   }
+
+  updateLikeCount(id: any, isLike: boolean): void {
+      console.log(this.filteredPosts[id], isLike);
+      let count = 0;
+      if (isLike) {
+        count = this.filteredPosts[id].likeCount + 1;
+      } else {
+        count = this.filteredPosts[id].dislikeCount + 1;
+      }
+      this.filteredPosts[id].postId
+      this.postService.updateLikeCount(this.filteredPosts[id].postId, 
+        count, isLike).subscribe((response) => {
+        console.log('Post updated successfully:', response);
+        this.filteredPosts[id].likeCount = response.likeCount;
+        this.filteredPosts[id].dislikeCount = response.dislikeCount;
+      }
+      , (error) => {
+        console.error('Error updating post:', error);
+      }
+    );
+  }
+
 
   prevPage(): void {
     if (this.currentPage > 1) {

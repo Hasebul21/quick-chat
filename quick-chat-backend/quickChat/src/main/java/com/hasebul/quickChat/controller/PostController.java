@@ -1,5 +1,6 @@
 package com.hasebul.quickChat.controller;
 
+import com.hasebul.quickChat.dto.LikeDislikeRequest;
 import com.hasebul.quickChat.dto.PostDto;
 import com.hasebul.quickChat.dto.PostFilterDTO;
 import com.hasebul.quickChat.model.Post;
@@ -53,24 +54,16 @@ public class PostController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/post/like/{id}")
-    public ResponseEntity<Post> updatePostLikeCount(@PathVariable("id") String id, @RequestBody int likeCount) {
-        Post updatedPost = postService.updatePostLikeCount(id, likeCount);
+    @PutMapping("/posts/{id}/likes")
+    public ResponseEntity<Post> updatePostLikeDislikeCount(@PathVariable("id") String postId,
+                                                           @RequestBody LikeDislikeRequest likeDislikeRequest) {
+        Post updatedPost = postService.updatePostLikeDislikeCount(postId, likeDislikeRequest.getCount(), likeDislikeRequest.isLike());
+
         if (updatedPost != null) {
             return ResponseEntity.ok(updatedPost);
         }
         return ResponseEntity.notFound().build();
     }
-
-    @PutMapping("/post/dislike/{id}")
-    public ResponseEntity<Post> updatePostDislikeCount(@PathVariable("id") String id, @RequestBody int dislikeCount) {
-        Post updatedPost = postService.updatePostDislikeCount(id, dislikeCount);
-        if (updatedPost != null) {
-            return ResponseEntity.ok(updatedPost);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
     @DeleteMapping("/post/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") String id) {
         postService.deletePost(id);

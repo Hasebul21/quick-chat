@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -34,13 +34,10 @@ export class PostService {
     return this.http.put<any>(`${this.url}/post/${id}`, post)
   }
 
-  updatePostLikeCount(id: string, likeCount: number): Observable<any> {
-    return this.http.put<any>(`${this.url}/post/like/${id}`, { likeCount })
-  }
-
-  updatePostDislikeCount(id: string, dislikeCount: number): Observable<any> {
-    return this.http.put<any>(`${this.url}/post/dislike/${id}`, { dislikeCount })
-  }
+  updateLikeCount(postId: string, count: number, isLike: boolean): Observable<any> {
+    const body = { count, isLike };
+    return this.http.put<any>(`http://localhost:8080/posts/${postId}/likes`, body);
+}
 
   deletePost(id: string): Observable<any> {
     return this.http.delete<any>(`${this.url}/post/${id}`)

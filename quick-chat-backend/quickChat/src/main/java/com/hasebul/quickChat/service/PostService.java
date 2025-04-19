@@ -73,10 +73,14 @@ public class PostService {
         return null;
     }
 
-    public Post updatePostLikeCount(String id, int likeCount) {
-        Post post = postRepo.findById(id).orElse(null);
+    public Post updatePostLikeDislikeCount(String postId, int count, boolean isLike) {
+        Post post = postRepo.findById(postId).orElse(null);
         if (post != null) {
-            post.setLikeCount(likeCount);
+            if (isLike) {
+                post.setLikeCount(count);
+            } else {
+                post.setDislikeCount(count);
+            }
             postRepo.save(post);
         }
         return post;
@@ -179,6 +183,15 @@ public class PostService {
                         )
                 ));
         mustQueries.add(createdDateQuery);
+
+        Query updatedDateQuery = Query.of(q -> q
+                .range(r -> r.date(
+                                d -> d.field("updatedDate")
+                                        .gte(updatedDateGte != null ? updatedDateGte : null)
+                                        .lte(updatedDateLte != null ? updatedDateLte : null)
+                        )
+                ));
+        mustQueries.add(updatedDateQuery);
 
         Query mustQuery = Query.of(q -> q.bool(b -> b.must(mustQueries)));
 
