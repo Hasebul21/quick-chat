@@ -180,15 +180,6 @@ public class PostService {
                 ));
         mustQueries.add(createdDateQuery);
 
-        Query updatedDateQuery = Query.of(q -> q
-                .range(r -> r.date(
-                                d -> d.field("updatedDate")
-                                        .gte(updatedDateGte != null ? updatedDateGte : null)
-                                        .lte(updatedDateLte != null ? updatedDateLte : null)
-                        )
-                ));
-        mustQueries.add(updatedDateQuery);
-
         Query mustQuery = Query.of(q -> q.bool(b -> b.must(mustQueries)));
 
         NativeQuery nativeQuery = NativeQuery.builder()
