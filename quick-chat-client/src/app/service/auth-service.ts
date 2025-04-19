@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
 
-  url = 'http://localhost:8080/auth/users'
+  url = 'http://localhost:8080/auth/user'
   constructor(private http: HttpClient) { }
 
   persisUser(user : any): Observable<any>{
@@ -22,7 +22,21 @@ export class AuthService {
     return this.http.get<any>(`${this.url}/${id}`);
   }
 
-  getUserByUserNameAndPassword(useremail: string, password: string): Observable<any>{
-    return this.http.get<any>(`${this.url}/${useremail}/${password}`)
+  getUserByUserNameAndPassword(userEmail: string, password: string): Observable<any>{
+    return this.http.post<any>(`${this.url}/login`, { userEmail, password });
+  }
+
+  setLoggedInUser(user: any): void {
+    sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+    console.log(sessionStorage);
+  }
+
+  getLoggedInUser(): any {
+    const user = sessionStorage.getItem('loggedInUser');
+    return user ? JSON.parse(user) : null;
+  }
+
+  removeLoggedInUser(): void {
+    sessionStorage.removeItem('loggedInUser');
   }
 }

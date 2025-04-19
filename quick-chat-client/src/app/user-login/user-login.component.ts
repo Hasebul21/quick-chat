@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../service/auth-service';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { StompService } from '../service/stomp.service';
 
 @Component({
   selector: 'app-user-login',
@@ -10,18 +11,21 @@ import { RouterModule } from '@angular/router';
   styleUrl: './user-login.component.scss'
 })
 export class UserLoginComponent {
-    username: string;
-    password: string;
-    @Output() selectedUserEvent : EventEmitter<any> = new EventEmitter<any>();
-    @Output() selectedUsernameEvent : EventEmitter<any> = new EventEmitter<any>();
+    username: string = 'rithy@quickchat.com';
+    password: string = '12345';
 
-    constructor(private auth : AuthService){}
+    constructor(private auth : AuthService, 
+      private router : Router,
+      private stompService : StompService
+    ){}
 
     login(){
       this.auth.getUserByUserNameAndPassword(this.username, this.password).subscribe({
         next: (response)=>{
-          this.selectedUserEvent.emit(response);
-          this.selectedUsernameEvent.emit(this.username);
+           console.log(response);
+           this.auth.setLoggedInUser(response);
+            this.stompService.connect(response);
+           this.router.navigate(['/home']);
         },
         error: ()=>{
 

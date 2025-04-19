@@ -42,7 +42,7 @@ public class WebSocketUserController {
                            SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception {
         User newUser = userService.findUserByEmail(userDto.getUserEmail());
         simpMessageHeaderAccessor.getSessionAttributes().put("userId",newUser.getId());
-        //simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", redisService.getActiveUsers());
+       // simpMessagingTemplate.convertAndSendToUser(newUser.getId().toString(), "public/activeUsers", redisService.getActiveUsers());
         return redisService.getActiveUsers();
     }
 

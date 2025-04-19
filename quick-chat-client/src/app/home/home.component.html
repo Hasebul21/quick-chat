@@ -35,8 +35,15 @@
         <mat-card-title class="custom-title">Share something with the world</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <textarea matInput placeholder="What's on your mind?" [(ngModel)]="newPostContent" rows="4"
-          class="post-textarea"></textarea>
+        <textarea
+          matInput
+          placeholder="What's on your mind?"
+          [(ngModel)]="newPostContent"
+          rows="4"
+          maxlength="200"
+          class="post-textarea">
+        </textarea>
+        <div class="char-counter">{{ newPostContent?.length || 0 }}/200</div>
       </mat-card-content>
       <mat-card-actions class="action-buttons">
         <button mat-raised-button color="primary" (click)="postPublicly()">Post</button>

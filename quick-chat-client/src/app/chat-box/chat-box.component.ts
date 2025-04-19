@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ChatService } from '../service/chat.service';
 import { forkJoin, map } from 'rxjs';
+import { StompService } from '../service/stomp.service';
+import { AuthService } from '../service/auth-service';
 
 @Component({
   selector: 'app-chat-box',
@@ -12,7 +14,7 @@ import { forkJoin, map } from 'rxjs';
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss'
 })
-export class ChatBoxComponent implements OnChanges {
+export class ChatBoxComponent implements OnChanges, OnInit {
 
   @Input() selectedUser: any;
   @Input() loginUser: any;
@@ -22,18 +24,24 @@ export class ChatBoxComponent implements OnChanges {
   messages: any[] = [];
   private isSubscribed: boolean = false;
 
-  constructor(private chatService : ChatService){}
+  constructor(private chatService : ChatService, 
+    private stompService :StompService, private auth : AuthService){}
+
+  ngOnInit(): void {
+     
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.selectedUser && !this.isSubscribed) {
       this.connectSocket();
     }
+    const loggedInUser = this.auth.getLoggedInUser();
     forkJoin([
       this.chatService.getAllChats(this.loginUser.id, this.selectedUser.id),
       this.chatService.getAllChats(this.selectedUser.id, this.loginUser.id)
     ])
     .pipe(
-      map(([messages1, messages2]) => [...messages1, ...messages2]) // Merge both responses
+      map(([messages1, messages2]) => [...messages1, ...messages2])
     )
     .subscribe({
       next: (response) => {
@@ -82,9 +90,10 @@ export class ChatBoxComponent implements OnChanges {
   }
 
   sendMessage(content: string) {
+    console.log(content);
     console.log(this.loginUser, this.selectedUser);
     if (this.stompClient) {
-      this.stompClient.send('/app/privateMessage', { receipt: 'message-receipt' },
+      this.stompClient.send('/app/chat/private/send', { receipt: 'message-receipt' },
         JSON.stringify({
           senderName: this.loginUser.userName,
           senderId: this.loginUser.id,
