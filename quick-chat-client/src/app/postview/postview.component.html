@@ -1,0 +1,64 @@
+<div class="filter-container">
+    <button mat-raised-button color="primary" (click)="openFilterOptions()">Filter</button>
+  
+    <!-- Filter Options Dropdown -->
+    <div *ngIf="showFilterOptions" class="filter-options-box">
+      <div class="filter-options">
+        <mat-form-field appearance="fill" class="filter-input">
+          <mat-label>Filter by Username</mat-label>
+          <input matInput [(ngModel)]="filter.username" placeholder="Enter username">
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill" class="filter-input">
+          <mat-label>Filter by Content</mat-label>
+          <input matInput [(ngModel)]="filter.content" placeholder="Enter content text">
+        </mat-form-field>
+  
+        <div class="filter-buttons">
+          <button mat-raised-button color="accent" (click)="applyFilter()">Apply Filter</button>
+          <button mat-raised-button color="warn" (click)="resetFilter()">Reset Filter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="post-grid">
+    <mat-card *ngFor="let post of currentPagePosts" class="styled-post-card">
+      <mat-card-header>
+        <div mat-card-avatar class="user-avatar" [ngStyle]="{ 'background-image': 'url(' + post.avatarUrl + ')' }"></div>
+        <div class="header-info">
+          <div class="post-user-name"><strong>{{ post.creatorName }}</strong></div>
+          <div class="post-user-email">{{ post.creatorEmail }}</div>
+          <div class="post-dates">
+            <div>Created: {{ post.createdDate | date: 'short' }}</div>
+            <div>Updated: {{ post.updatedDate | date: 'short' }}</div>
+          </div>
+        </div>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <p class="post-content">{{ post.content | slice:0:300 }}{{ post.content.length > 300 ? '...' : '' }}</p>
+      </mat-card-content>
+  
+      <mat-card-actions class="post-actions-icons">
+        <button mat-icon-button color="primary"><mat-icon>thumb_up</mat-icon></button>
+        <span class="action-count">{{ post.likeCount }}</span>
+        <button mat-icon-button color="warn"><mat-icon>thumb_down</mat-icon></button>
+        <span class="action-count">{{ post.dislikeCount }}</span>
+      </mat-card-actions>
+  
+      <mat-card-actions class="post-action-buttons">
+        <button mat-raised-button color="primary" (click)="editPost(post)">Edit</button>
+        <button mat-raised-button color="warn" (click)="deletePost(post)">Delete</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  <!-- Pagination -->
+  <div class="pagination-controls">
+    <button mat-raised-button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+    <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button mat-raised-button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+  

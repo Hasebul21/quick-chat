@@ -14,7 +14,7 @@ import { AuthService } from '../service/auth-service';
 @Component({
   selector: 'app-chat-room',
   standalone: true,
-  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, UserLoginComponent, RouterModule, HomeComponent],
+  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, RouterModule],
   templateUrl: './chat-room.component.html',
   styleUrl: './chat-room.component.scss'
 })

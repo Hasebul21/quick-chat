@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +12,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../service/auth-service';
+import { PostService } from '../service/post.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-home',
@@ -29,13 +32,16 @@ import { RouterModule } from '@angular/router';
     MatMenuModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    MatSnackBarModule
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   searchQuery = '';
+  loggedInUser: any = null;
+  newPostContent: string = '';
 
   posts = [
     {
@@ -110,49 +116,25 @@ export class HomeComponent {
       likes: 31,
       dislikes: 0
     },
-    {
-      user: 'Jane Doe',
-      avatarUrl: 'https://i.pravatar.cc/150?img=10',
-      timestamp: 'April 9, 2025',
-      content: 'What are your favorite Angular performance optimization techniques?',
-      likes: 21,
-      dislikes: 4
-    },
-    {
-      user: 'James Bond',
-      avatarUrl: 'https://i.pravatar.cc/150?img=11',
-      timestamp: 'April 8, 2025',
-      content: 'New Angular CLI update makes everything much smoother!',
-      likes: 50,
-      dislikes: 2
-    },
-    {
-      user: 'Lily Evans',
-      avatarUrl: 'https://i.pravatar.cc/150?img=12',
-      timestamp: 'April 7, 2025',
-      content: 'Anyone tried integrating Angular with GraphQL? Thoughts?',
-      likes: 12,
-      dislikes: 3
-    },
-    {
-      user: 'Mike Tyson',
-      avatarUrl: 'https://i.pravatar.cc/150?img=13',
-      timestamp: 'April 6, 2025',
-      content: 'Building a REST API with Angular and NestJS!',
-      likes: 35,
-      dislikes: 4
-    }
   ];
-
-
   currentPage: number = 1;
   postsPerPage: number = 6;
   totalPages: number = Math.ceil(this.posts.length / this.postsPerPage);
+
+  constructor(private authService: AuthService,
+              private postService: PostService,
+              private snackBar: MatSnackBar
+            ) { }
+              
 
   get currentPagePosts() {
     const startIndex = (this.currentPage - 1) * this.postsPerPage;
     const endIndex = startIndex + this.postsPerPage;
     return this.posts.slice(startIndex, endIndex);
+  }
+
+  ngOnInit(): void {
+    this.loggedInUser = this.authService.getLoggedInUser();
   }
 
   nextPage() {
@@ -167,60 +149,35 @@ export class HomeComponent {
     }
   }
 
-
-  users = [
-    {
-      name: 'Alice Smith',
-      role: 'Designer',
-      avatar: 'https://i.pravatar.cc/301',
-      email: 'alice.smith@example.com',
-      friends: ['Bob Johnson', 'Charlie Rose', 'Eve Watson']
-    },
-    {
-      name: 'Bob Johnson',
-      role: 'Engineer',
-      avatar: 'https://i.pravatar.cc/302',
-      email: 'bob.johnson@example.com',
-      friends: ['Alice Smith', 'Charlie Rose', 'Daniel Scott']
-    },
-    {
-      name: 'Charlie Rose',
-      role: 'PM',
-      avatar: 'https://i.pravatar.cc/303',
-      email: 'charlie.rose@example.com',
-      friends: ['Alice Smith', 'Bob Johnson', 'Eve Watson']
-    },
-    {
-      name: 'Daniel Scott',
-      role: 'QA Analyst',
-      avatar: 'https://i.pravatar.cc/304',
-      email: 'daniel.scott@example.com',
-      friends: ['Bob Johnson', 'Eve Watson']
-    },
-    {
-      name: 'Eve Watson',
-      role: 'DevOps Engineer',
-      avatar: 'https://i.pravatar.cc/305',
-      email: 'eve.watson@example.com',
-      friends: ['Alice Smith', 'Charlie Rose', 'Daniel Scott']
-    }
-  ];
-
-  newPostContent: string = '';
-
   postPublicly() {
-    if (this.newPostContent.trim()) {
+    console.log(this.loggedInUser);
       const newPost = {
-        user: 'John Doe',
-        avatarUrl: 'https://i.pravatar.cc/300?img=7',
-        timestamp: new Date().toLocaleString(),
-        content: this.newPostContent,
-        likes: 0,
-        dislikes: 0,
+        creatorName : this.loggedInUser.userName,
+        creatorEmail : this.loggedInUser.userEmail,
+        content :this.newPostContent.trim(),
+        likeCount : 0,
+        dislikeCount : 0,
       };
-      this.filteredPosts.unshift(newPost);
       this.newPostContent = '';
-    }
+      this.postService.persistPost(newPost).subscribe(
+        response => {
+          console.log('Post created successfully', response);
+          this.snackBar.open('Post created successfully!', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar', 'custom-snackbar'],
+            verticalPosition: 'top',
+          });
+        },
+        error => {
+          console.error('Error creating post', error);
+          this.snackBar.open('Failed to create post.', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar', 'custom-snackbar'],
+            verticalPosition: 'top',
+          });
+        }
+      );
+      console.log(newPost);
   }
 
 

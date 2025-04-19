@@ -364,3 +364,22 @@ ul {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-snack-bar-container.success-snackbar {
+    background-color: #4caf50 !important;
+    color: #fff;
+  }
+  
+  .mat-snack-bar-container.error-snackbar {
+    background-color: #f44336 !important;
+    color: #fff;
+  }
+  
+  .mat-snack-bar-container.custom-snackbar {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    transform: none !important;
+    z-index: 10000;
+  }
