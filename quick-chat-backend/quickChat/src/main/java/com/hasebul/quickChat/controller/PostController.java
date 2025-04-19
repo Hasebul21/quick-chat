@@ -1,6 +1,7 @@
 package com.hasebul.quickChat.controller;
 
 import com.hasebul.quickChat.dto.PostDto;
+import com.hasebul.quickChat.dto.PostFilterDTO;
 import com.hasebul.quickChat.model.Post;
 import com.hasebul.quickChat.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,12 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable("id") String id) {
         postService.deletePost(id);
         return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.OK);
+    }
+
+    @PostMapping("/post/filter")
+    public ResponseEntity<?> postFilter(@RequestBody PostFilterDTO postFilterDTO){
+        List<Post> list = postService.filterResult(postFilterDTO);
+        return ResponseEntity.ok(list);
     }
 
 }

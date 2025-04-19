@@ -45,4 +45,8 @@ export class PostService {
   deletePost(id: string): Observable<any> {
     return this.http.delete<any>(`${this.url}/post/${id}`)
   }
+
+  getPostsByFilter(filter: any): Observable<any[]> {
+    return this.http.post<any[]>(`${this.url}/post/filter`, filter)
+  }
 }

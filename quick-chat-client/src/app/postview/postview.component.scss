@@ -54,7 +54,6 @@
   
     /* Optional: limit lines shown, add ellipsis if text is too long */
     display: -webkit-box;
-    -webkit-line-clamp: 8; /* Show max 8 lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
