@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AuthService } from '../service/auth-service';
+import { NavbarComponent } from "../navbar/navbar.component";
 
 @Component({
   selector: 'app-postview',
@@ -37,8 +38,9 @@ import { AuthService } from '../service/auth-service';
     RouterModule,
     MatSnackBarModule,
     MatDatepickerModule,
-    MatNativeDateModule
-  ],
+    MatNativeDateModule,
+    NavbarComponent
+],
   templateUrl: './postview.component.html',
   styleUrls: ['./postview.component.scss']
 })

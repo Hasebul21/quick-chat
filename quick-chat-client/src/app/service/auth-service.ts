@@ -26,8 +26,11 @@ export class AuthService {
     return this.http.post<any>(`${this.url}/login`, { userEmail, password });
   }
 
-  updateUserProfile(id: number, user: any): Observable<any>{
-    return this.http.put<any>(`${this.url}/${id}`, user);
+  updateUserProfile(id: number, formData: FormData): Observable<any> {
+    return this.http.put<any>(`${this.url}/${id}`, formData, {
+      reportProgress: true,
+      observe: 'body',
+    });
   }
 
   logout(userEmail : string): Observable<any>{

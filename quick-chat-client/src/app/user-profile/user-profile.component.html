@@ -1,14 +1,17 @@
-
+<app-navbar></app-navbar>
 <body>
     <div class="form-container">
         <h2>Hi {{loggedInUser.userName}}, let's update your profile</h2>
         <form (ngSubmit)="updateProfile()" #updateProfileForm="ngForm">
+            
+            <label for="profile">Upload Profile Picture</label>
+            <input type="file" id="profile" name="profile" (change)="onFileSelected($event)" required>
 
             <label for="title">Professional Title</label>
-            <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="Software Developer" required>
+            <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="Software Developer">
           
             <label for="location">Location</label>
-            <input type="text" id="location" name="location" [(ngModel)]="location" placeholder="New York, USA" required>
+            <input type="text" id="location" name="location" [(ngModel)]="location" placeholder="New York, USA">
           
             <label for="portfolio">Portfolio</label>
             <input type="text" id="portfolio" name="portfolio" [(ngModel)]="portfolio" placeholder="https://www.johnsmith.dev" required>
