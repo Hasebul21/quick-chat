@@ -24,6 +24,7 @@ export class UserLoginComponent {
     login(){
       this.auth.getUserByUserNameAndPassword(this.username, this.password).subscribe({
         next: (response)=>{
+           response.profileImage = `data:image/jpeg;base64,${response.profileImage}`;
            this.auth.setLoggedInUser(response);
            this.stompService.connect(response);
            this.toastr.success('User logged in successfully!', 'Success');

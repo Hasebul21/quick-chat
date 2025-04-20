@@ -44,10 +44,6 @@ export class TrendingPostComponent implements OnInit, OnChanges {
   private stompClient: any | undefined;
   private isSubscribed: boolean = false;
   trendingPosts: any[] = [];
-  searchQuery = '';
-  currentPage: number = 1;
-  postsPerPage: number = 6;
-  totalPages: number = Math.ceil(this.trendingPosts.length / this.postsPerPage);
 
   constructor(private postService: PostService) { }
 
@@ -60,37 +56,6 @@ export class TrendingPostComponent implements OnInit, OnChanges {
     if (!this.isSubscribed) {
       this.connectSocket();
     }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  get filteredPosts() {
-    if (!this.searchQuery.trim()) {
-      return this.trendingPosts;
-    }
-    return this.trendingPosts.filter(post =>
-      post.user.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-  }
-
-  get currentPagePosts() {
-    const startIndex = (this.currentPage - 1) * this.postsPerPage;
-    const endIndex = startIndex + this.postsPerPage;
-    return this.trendingPosts.slice(startIndex, endIndex);
-  }
-
-  searchPosts() {
-    // Intentionally left empty as we're using a getter for filteredPosts
   }
 
   connectSocket() {

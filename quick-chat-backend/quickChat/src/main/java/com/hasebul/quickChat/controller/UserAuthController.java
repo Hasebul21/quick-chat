@@ -27,6 +27,6 @@ public class UserAuthController {
     @PostMapping("auth/users/logout")
     public ResponseEntity<?> logout(@RequestBody LoginDto loginDto) throws Exception {
         userService.logout(loginDto);
-        return ResponseEntity.ok("Logout successful");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -18,11 +18,3 @@
       </mat-card-actions>
     </mat-card>
   </div>
-  
-  <!-- Pagination Controls -->
-  <div class="pagination-controls">
-    <button mat-raised-button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-    <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
-    <button mat-raised-button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-  </div>
-  
