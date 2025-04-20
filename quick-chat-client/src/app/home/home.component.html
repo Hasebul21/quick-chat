@@ -37,10 +37,7 @@
     <!-- New Post Box -->
     <mat-card class="post-public-card custom-post-card">
       <mat-card-header>
-        <div mat-card-avatar class="user-avatar"
-          [style.background-image]="'url(' + (loggedInUser?.profileImage || 'https://robohash.org/robot') + ')'">
-        </div>
-        <mat-card-title class="custom-title">Share something with the world</mat-card-title>
+        <mat-card-title class="fancy-title">What's on your mind today?</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <textarea matInput placeholder="What's on your mind?" [(ngModel)]="newPostContent" rows="4" maxlength="200"
@@ -52,6 +49,8 @@
         <button mat-raised-button color="primary" (click)="postPublicly()">Post</button>
       </mat-card-actions>
     </mat-card>
+    
+    <p class="fancy-title trending-header">Trending Now</p>
 
     <app-trending-post></app-trending-post>
   </main>

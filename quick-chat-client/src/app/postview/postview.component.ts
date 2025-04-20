@@ -18,6 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AuthService } from '../service/auth-service';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-postview',
@@ -75,11 +76,13 @@ export class PostviewComponent {
   };
 
   constructor(private postService: PostService,
-              private authService : AuthService
+              private authService : AuthService,
+              private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
+    console.log('Logged in user:', this.loggedInUser);
     this.loadPosts();
   }
 
@@ -198,6 +201,11 @@ export class PostviewComponent {
 
   deletePost(post: any): void {
     console.log('Delete post:', post);
-    // Implement delete logic here
+    this.postService.deletePost(post.postId).subscribe((response) => {
+      this.toastr.success('Post deleted successfully:', 'Success');
+      this.loadPosts();
+    }, (error) => {
+      this.toastr.error('Error deleting post', 'Error');
+    });
   }
 }

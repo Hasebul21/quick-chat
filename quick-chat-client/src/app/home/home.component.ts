@@ -17,6 +17,8 @@ import { PostService } from '../service/post.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { TrendingPostComponent } from "../trending-post/trending-post.component";
+import { StompService } from '../service/stomp.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
@@ -48,7 +50,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   constructor(private authService: AuthService,
               private postService: PostService,
-              private snackBar: MatSnackBar
+               private toastr: ToastrService
             ) { }
   ngAfterViewInit(): void {
     //this.postService.getMostLikedPost().subscribe();
@@ -75,19 +77,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.postService.persistPost(newPost).subscribe(
         response => {
           console.log('Post created successfully', response);
-          this.snackBar.open('Post created successfully!', 'Close', {
-            duration: 3000,
-            panelClass: ['success-snackbar', 'custom-snackbar'],
-            verticalPosition: 'top',
-          });
+          this.toastr.success('User logged in successfully!', 'Success');
         },
         error => {
           console.error('Error creating post', error);
-          this.snackBar.open('Failed to create post.', 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar', 'custom-snackbar'],
-            verticalPosition: 'top',
-          });
+          this.toastr.success('User logged in successfully!', 'Success');
         }
       );
       console.log(newPost);

@@ -46,6 +46,7 @@ public class PostService {
     public List<Post> getAllPosts() {
         Iterable<Post> iterable = postRepo.findAll();
         return StreamSupport.stream(iterable.spliterator(), false)
+                .sorted((a, b) -> b.getCreatedDate().compareTo(a.getCreatedDate()))  // sorted in descending order
                 .collect(Collectors.toList());
     }
 

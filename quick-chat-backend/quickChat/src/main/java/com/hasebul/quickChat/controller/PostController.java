@@ -67,7 +67,7 @@ public class PostController {
     @DeleteMapping("/post/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") String id) {
         postService.deletePost(id);
-        return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/post/most-liked")

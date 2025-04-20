@@ -1,71 +1,52 @@
 .post-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-    padding: 16px;
-  }
-  
-  .small-card {
-    padding: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-  }
-  
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-  }
-  
-  .header-info {
-    margin-left: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .post-user {
-    font-weight: bold;
-    font-size: 16px;
-  }
-  
-  .post-timestamp {
-    font-size: 12px;
-    color: #777;
-  }
-  
-  .post-content {
-    font-size: 14px;
-    margin-top: 10px;
-    line-height: 1.4;
-  }
-  
-  .post-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: 8px;
-    gap: 8px;
-  }
-  
-  .action-count {
-    font-size: 13px;
-    margin-right: 12px;
-    color: #555;
-  }
-  
-  .pagination-controls {
-    margin-top: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-  }
-  
-  .page-number {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* slightly smaller min */
+  gap: 12px;
+  padding: 12px;
+}
+
+.small-card {
+  padding: 8px 12px; /* tighter padding */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.header-info {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.post-user {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.post-timestamp {
+  font-size: 11px;
+  color: #777;
+  margin: 0;
+}
+
+.post-content {
+  font-size: 13px;
+  margin-top: 6px;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 4px;
+  gap: 6px;
+}
+
+.action-count {
+  font-size: 12px;
+  margin-right: 8px;
+  color: #555;
+}
