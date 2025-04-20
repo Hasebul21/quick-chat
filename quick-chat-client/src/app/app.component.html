@@ -13,11 +13,15 @@
   </div>
 
   <!-- Right section: User Profile and Logout Button -->
-  <div class="user-profile">
-    <span class="username">John Doe</span>
+  <div class="user-profile" *ngIf="loggedInUser; else logoutTemplate">
+    <span class="username">{{ loggedInUser.userName }}</span>
     <img class="profile-image" src="https://i.pravatar.cc/300?img=7" alt="User Photo" />
     <button mat-button class="logout-btn" (click)="logout()">Logout</button>
   </div>
+  
+  <ng-template #logoutTemplate>
+    <a mat-button class="login-btn" routerLink="/login">Login</a>
+  </ng-template>
 </mat-toolbar>
 
 

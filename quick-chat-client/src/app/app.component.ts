@@ -8,9 +8,11 @@ import SockJS from 'sockjs-client';
 import { CommonModule } from '@angular/common';
 import { UserRegistrationComponent } from "./user-registration/user-registration.component";
 import { UserLoginComponent } from "./user-login/user-login.component";
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HomeComponent } from "./home/home.component";
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AuthService } from './service/auth-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -20,8 +22,31 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class AppComponent {
   title = 'quick-chat';
+  loggedInUser: any = null;
+  constructor(private auth: AuthService,
+    private toastr: ToastrService,
+    private router : Router
+  ) {
+
+  }
+
+  ngOnInit() {
+    this.loggedInUser = this.auth.getLoggedInUser();
+    console.log(this.loggedInUser);
+  }
 
   logout() {
-
+    this.auth.logout(this.loggedInUser.userEmail).subscribe({
+      next: (response) => {
+        console.log('Logout successful', response);
+        this.auth.removeLoggedInUser();
+        this.loggedInUser = null;
+        this.toastr.success('Logout successfully!', 'Success');
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error('Logout failed', error);
+      }
+    });
   }
 }

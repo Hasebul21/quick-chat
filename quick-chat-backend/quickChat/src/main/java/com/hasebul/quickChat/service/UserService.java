@@ -63,4 +63,24 @@ public class UserService {
         User user = findUserByEmail(loginDto.getUserEmail());
         eventPublisher.publishEvent(new UserLogoutEvent(user));
     }
+
+    /*
+      Use Reference to update user info
+     */
+
+    public User updateUserInfo(Long id, UserDto userDto) {
+        User user = authRepo.findById(id).orElse(null);
+        if (user != null) {
+            if (userDto.getBio() != null) user.setBio(userDto.getBio());
+            if (userDto.getPortfolio() != null) user.setPortfolio(userDto.getPortfolio());
+            if (userDto.getSkills() != null) user.setSkills(userDto.getSkills());
+            if (userDto.getLocation() != null) user.setLocation(userDto.getLocation());
+            if (userDto.getHobbies() != null) user.setHobbies(userDto.getHobbies());
+            if (userDto.getInstagram() != null) user.setInstagram(userDto.getInstagram());
+            if (userDto.getProfessionalTitle() != null) user.setProfessionalTitle(userDto.getProfessionalTitle());
+
+            return authRepo.save(user);
+        }
+        return null;
+    }
 }

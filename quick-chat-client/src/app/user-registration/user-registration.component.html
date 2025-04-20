@@ -23,7 +23,7 @@
           <input type="password" id="confirm-password" name="confirm-password" [(ngModel)]="confirmPassword" required placeholder="Confirm your password">
         </div>
 
-        <button type="submit" class="btn" (click)="persistUser()">Register</button>
+        <button type="submit" class="btn" [disabled]="disableSubmitButton()" (click)="persistUser()">Register</button>
       </form>
     </div>
   </div>

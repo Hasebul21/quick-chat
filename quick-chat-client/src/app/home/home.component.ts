@@ -135,6 +135,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
+    console.log(this.loggedInUser);
   }
 
   nextPage() {

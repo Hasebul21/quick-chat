@@ -1,36 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Update</title>
-</head>
+
 <body>
     <div class="form-container">
-        <h2>Update Profile</h2>
-        <form id="updateProfileForm">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" placeholder="John Doe" required>
+        <h2>Hi {{loggedInUser.userName}}, let's update your profile</h2>
+        <form (ngSubmit)="updateProfile()" #updateProfileForm="ngForm">
 
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="john.doe@example.com" required>
-
+            <label for="title">Professional Title</label>
+            <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="Software Developer" required>
+          
             <label for="location">Location</label>
-            <input type="text" id="location" name="location" placeholder="New York, USA" required>
-
+            <input type="text" id="location" name="location" [(ngModel)]="location" placeholder="New York, USA" required>
+          
+            <label for="portfolio">Portfolio</label>
+            <input type="text" id="portfolio" name="portfolio" [(ngModel)]="portfolio" placeholder="https://www.johnsmith.dev" required>
+          
+            <label for="instagram">Instagram handle</label>
+            <input type="text" id="instagram" name="instagram" [(ngModel)]="instagram" placeholder="@johnsmith.codes" required>
+          
             <label for="bio">Bio</label>
-            <textarea id="bio" name="bio" placeholder="Passionate about building scalable web apps..." required></textarea>
-
+            <textarea id="bio"
+             name="bio" 
+             maxlength="300"
+            [(ngModel)]="bio" 
+            placeholder="Passionate about building scalable web apps..." required></textarea>
+          
             <label for="skills">Skills</label>
-            <input type="text" id="skills" name="skills" placeholder="JavaScript, Angular, Node.js" required>
-
+            <input type="text" 
+            id="skills" 
+            name="skills" 
+            maxlength="100"
+            [(ngModel)]="skills" 
+            placeholder="JavaScript, Angular, Node.js" required>
+          
             <label for="hobbies">Hobbies</label>
-            <input type="text" id="hobbies" name="hobbies" placeholder="Traveling, Photography, Open Source Contributions" required>
-
+            <input type="text" 
+            id="hobbies" 
+            maxlength="100"
+            name="hobbies" 
+            [(ngModel)]="hobbies" 
+            placeholder="Traveling, Photography, Open Source Contributions" required>
+          
             <button type="submit">Update Profile</button>
-        </form>
+          </form>
     </div>
-
-    <script src="script.js"></script>
 </body>
-</html>

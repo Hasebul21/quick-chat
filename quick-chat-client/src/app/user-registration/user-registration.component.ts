@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../service/auth-service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-registration',
@@ -15,20 +16,29 @@ export class UserRegistrationComponent {
   password: string;
   confirmPassword: string;
 
-  constructor(private authService : AuthService, private router: Router){}
+  constructor(private authService : AuthService,
+     private router: Router,
+     private toastr: ToastrService){
+     }
 
   persistUser(){
     this.authService.persisUser({
-      username: this.username,
-      useremail: this.useremail,
+      userName: this.username,
+      userEmail: this.useremail,
       password: this.password
     }).subscribe({
       next: (response) => {
+        this.toastr.success('User registered successfully!', 'Success');
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        console.error('Error persisting user:', err);
+        this.toastr.error('Failed to register user!', 'Error');
       },
     })
+  }
+
+  disableSubmitButton(): boolean {
+    console.log(this.username, this.useremail, this.password, this.confirmPassword);
+    return !this.username || !this.useremail || !this.password || this.password !== this.confirmPassword;
   }
 }
