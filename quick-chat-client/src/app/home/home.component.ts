@@ -69,6 +69,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       const newPost = {
         creatorName : this.loggedInUser.userName,
         creatorEmail : this.loggedInUser.userEmail,
+        creatorImage : this.loggedInUser.profileImage,
         content :this.newPostContent.trim(),
         likeCount : 0,
         dislikeCount : 0,

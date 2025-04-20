@@ -31,6 +31,9 @@ public class Post {
     @Field(type = FieldType.Keyword)
     private String updatedDate;
 
+    @Field(type = FieldType.Keyword)
+    private String creatorImage;
+
     @Field(type = FieldType.Integer)
     private int likeCount = 0;
 
@@ -112,6 +115,14 @@ public class Post {
 
     public void setDislikeCount(int dislikeCount) {
         this.dislikeCount = dislikeCount;
+    }
+
+    public String getCreatorImage() {
+        return creatorImage;
+    }
+
+    public void setCreatorImage(String creatorImage) {
+        this.creatorImage = creatorImage;
     }
 }
 

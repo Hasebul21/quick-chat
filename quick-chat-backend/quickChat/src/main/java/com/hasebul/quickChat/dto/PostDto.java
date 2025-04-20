@@ -15,12 +15,15 @@ public class PostDto {
     private String updatedDate;  // Store as String in the DTO
     private int likeCount;
     private int dislikeCount;
+    private String creatorImage;
 
     // Constructors
     public PostDto() {}
 
-    public PostDto(String postId, String content, String creatorName, String creatorEmail,
-                   String createdDate, String updatedDate, int likeCount, int dislikeCount) {
+    public PostDto(String postId, String content,
+                   String creatorName, String creatorEmail,
+                   String createdDate, String updatedDate,
+                   int likeCount, int dislikeCount, String creatorImage) {
         this.postId = postId;
         this.content = content;
         this.creatorName = creatorName;
@@ -29,6 +32,7 @@ public class PostDto {
         this.updatedDate = updatedDate;
         this.likeCount = likeCount;
         this.dislikeCount = dislikeCount;
+        this.creatorImage = creatorImage;
     }
 
     // Getters and Setters
@@ -96,5 +100,13 @@ public class PostDto {
 
     public void setUpdatedDate(String updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public String getCreatorImage() {
+        return creatorImage;
+    }
+
+    public void setCreatorImage(String creatorImage) {
+        this.creatorImage = creatorImage;
     }
 }

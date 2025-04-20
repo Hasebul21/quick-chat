@@ -30,6 +30,7 @@ public class Helper {
         post.setCreatorEmail(dto.getCreatorEmail());
         post.setLikeCount(dto.getLikeCount());
         post.setDislikeCount(dto.getDislikeCount());
+        post.setCreatorImage(dto.getCreatorImage());
 
         return post;
     }

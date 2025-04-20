@@ -40,7 +40,9 @@ public class PostService {
         Post post = Helper.PostEntityToDto(postDto);
         post.setCreatedDate(LocalDateTime.now().toString());
         post.setUpdatedDate(LocalDateTime.now().toString());
-        return postRepo.save(post);
+        Post savedPost = postRepo.save(post);
+        findTrendingPost();
+        return savedPost;
     }
 
     public List<Post> getAllPosts() {
@@ -89,13 +91,13 @@ public class PostService {
             }
             postRepo.save(post);
         }
-        simpMessagingTemplate.convertAndSend("/topic/public/treding-post", getMostLikesPost());
+        findTrendingPost();
         return post;
     }
 
     public void deletePost(String id) {
         postRepo.deleteById(id);
-        simpMessagingTemplate.convertAndSend("/topic/public/treding-post", getMostLikesPost());
+        findTrendingPost();
     }
 
     public void findTrendingPost() {

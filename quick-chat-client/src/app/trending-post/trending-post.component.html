@@ -3,6 +3,9 @@
     <mat-card *ngFor="let post of trendingPosts" class="styled-post-card small-card">
       <mat-card-header>
         <div class="header-info">
+          <div mat-card-avatar class="user-avatar">
+            <img [src]="post.creatorImage || 'https://robohash.org/robot'" alt="Creator's Avatar" class="creator-avatar-img">
+          </div>
           <mat-card-title class="post-user">{{ post.creatorName }}</mat-card-title>
           <mat-card-subtitle class="post-timestamp">{{ post.createdDate }}</mat-card-subtitle>
         </div>

@@ -82,8 +82,10 @@
 <div class="post-grid">
     <mat-card *ngFor="let post of filteredPosts; let i = index" class="styled-post-card">
         <mat-card-header>
-            <div mat-card-avatar class="user-avatar" [ngStyle]="{ 'background-image': 'url(' + post.avatarUrl + ')' }">
-            </div>
+          <div mat-card-avatar class="user-avatar">
+            <img [src]="post.creatorImage || 'https://robohash.org/robot'" alt="Creator's Avatar" class="creator-avatar-img">
+          </div>
+          
             <div class="header-info">
                 <div class="post-user-name"><strong>{{ post.creatorName }}</strong></div>
                 <div class="post-user-email">{{ post.creatorEmail }}</div>
