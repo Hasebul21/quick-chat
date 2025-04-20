@@ -10,11 +10,12 @@ import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { StompService } from '../service/stomp.service';
 import { AuthService } from '../service/auth-service';
+import { NavbarComponent } from "../navbar/navbar.component";
 
 @Component({
   selector: 'app-chat-room',
   standalone: true,
-  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, RouterModule],
+  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, RouterModule, NavbarComponent],
   templateUrl: './chat-room.component.html',
   styleUrl: './chat-room.component.scss'
 })

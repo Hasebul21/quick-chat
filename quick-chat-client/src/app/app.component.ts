@@ -8,20 +8,20 @@ import SockJS from 'sockjs-client';
 import { CommonModule } from '@angular/common';
 import { UserRegistrationComponent } from "./user-registration/user-registration.component";
 import { UserLoginComponent } from "./user-login/user-login.component";
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HomeComponent } from "./home/home.component";
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AuthService } from './service/auth-service';
+import { ToastrService } from 'ngx-toastr';
+import { NavbarComponent } from "./navbar/navbar.component";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [MatToolbarModule, FormsModule, CommonModule, RouterModule]
+  imports: [MatToolbarModule, FormsModule, CommonModule, RouterModule, NavbarComponent]
 })
 export class AppComponent {
   title = 'quick-chat';
 
-  logout() {
-
-  }
 }

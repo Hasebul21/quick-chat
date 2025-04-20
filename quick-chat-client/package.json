@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^19.2.7",
     "@angular/cdk": "^19.2.10",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
@@ -21,6 +22,7 @@
     "@angular/router": "^19.2.0",
     "@stomp/stompjs": "^7.1.0",
     "bootstrap": "^5.3.3",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",

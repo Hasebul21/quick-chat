@@ -45,4 +45,14 @@ public class UserController {
     public List<User> getActiveUsers() {
         return redisService.getActiveUsers();
     }
+    
+    @PutMapping("auth/users/{id}")
+    public ResponseEntity<?> updateInfo(@PathVariable("id") Long id, @RequestBody UserDto userDto){
+        User user = userService.updateUserInfo(id, userDto);
+        if(user == null)
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User not found");
+        return ResponseEntity.ok(user);
+    }
 }

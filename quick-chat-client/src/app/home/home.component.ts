@@ -15,6 +15,7 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../service/auth-service';
 import { PostService } from '../service/post.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { NavbarComponent } from "../navbar/navbar.component";
 
 @Component({
   selector: 'app-home',
@@ -33,8 +34,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MatSnackBarModule
-  ],
+    MatSnackBarModule,
+    NavbarComponent
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -135,6 +137,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
+    console.log(this.loggedInUser);
   }
 
   nextPage() {

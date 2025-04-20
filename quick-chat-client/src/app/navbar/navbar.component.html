@@ -1,0 +1,26 @@
+<mat-toolbar color="primary" class="toolbar">
+    <!-- Left section: App Name -->
+    <div class="app-name">
+      <span>💬 Quick Chats App</span>
+    </div>
+  
+    <!-- Center section: Navigation Links -->
+    <div class="nav-links">
+      <a href="/home" class="nav-link">Dashboard</a>
+      <a href="/chatroom" class="nav-link">Messages</a>
+      <a href="/profile" class="nav-link">My Profile</a>
+      <a href="/posts" class="nav-link">Posts</a>
+    </div>
+  
+    <!-- Right section: User Profile and Logout Button -->
+    <div class="user-profile" *ngIf="loggedInUser; else logoutTemplate">
+      <span class="username">{{ loggedInUser.userName }}</span>
+      <img class="profile-image" [src]="loggedInUser?.profileImage || 'https://robohash.org/robot'" alt="User Photo" />
+      <button mat-button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+    
+    <ng-template #logoutTemplate>
+      <a mat-button class="login-btn" routerLink="/login">Login</a>
+    </ng-template>
+  </mat-toolbar>
+  

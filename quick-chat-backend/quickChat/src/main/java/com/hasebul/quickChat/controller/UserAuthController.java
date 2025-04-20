@@ -16,7 +16,7 @@ public class UserAuthController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("auth/user/login")
+    @PostMapping("auth/users/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) throws Exception {
         User user = userService.login(loginDto);
         if(user == null)
@@ -24,7 +24,7 @@ public class UserAuthController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("auth/user/logout")
+    @PostMapping("auth/users/logout")
     public ResponseEntity<?> logout(@RequestBody LoginDto loginDto) throws Exception {
         userService.logout(loginDto);
         return ResponseEntity.ok("Logout successful");
