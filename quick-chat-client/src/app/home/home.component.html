@@ -53,36 +53,6 @@
       </mat-card-actions>
     </mat-card>
 
-    <!-- Post Grid -->
-    <div class="post-grid">
-      <!-- Display posts for the current page -->
-      <mat-card *ngFor="let post of currentPagePosts" class="styled-post-card">
-        <mat-card-header>
-          <div mat-card-avatar class="user-avatar" [ngStyle]="{ 'background-image': 'url(' + post.avatarUrl + ')' }">
-          </div>
-          <div class="header-info">
-            <mat-card-title class="post-user">{{ post.user }}</mat-card-title>
-            <mat-card-subtitle class="post-timestamp">{{ post.timestamp }}</mat-card-subtitle>
-          </div>
-        </mat-card-header>
-        <mat-card-content>
-          <p class="post-content">{{ post.content }}</p>
-        </mat-card-content>
-        <mat-card-actions class="post-actions">
-          <button mat-icon-button color="primary"><mat-icon>thumb_up</mat-icon></button>
-          <span class="action-count">{{ post.likes }}</span>
-          <button mat-icon-button color="warn"><mat-icon>thumb_down</mat-icon></button>
-          <span class="action-count">{{ post.dislikes }}</span>
-          <button mat-icon-button color="accent"><mat-icon>comment</mat-icon></button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-
-    <!-- Pagination Controls -->
-    <div class="pagination-controls">
-      <button mat-raised-button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-      <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
-      <button mat-raised-button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-    </div>
+    <app-trending-post></app-trending-post>
   </main>
 </div>

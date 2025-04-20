@@ -1,6 +1,7 @@
 package com.hasebul.quickChat.controller;
 
 import com.hasebul.quickChat.dto.ChatMessageDto;
+import com.hasebul.quickChat.dto.RedisUserDto;
 import com.hasebul.quickChat.dto.UserDto;
 import com.hasebul.quickChat.model.ChatMessage;
 import com.hasebul.quickChat.model.User;
@@ -38,7 +39,7 @@ public class WebSocketUserController {
     // endpoint will be app/addUser
     @MessageMapping("/chat/join")
     @SendTo("/topic/public/activeUsers")
-    public List<User> handleUserJoin(@Payload UserDto userDto,
+    public List<RedisUserDto> handleUserJoin(@Payload UserDto userDto,
                            SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception {
         User newUser = userService.findUserByEmail(userDto.getUserEmail());
         simpMessageHeaderAccessor.getSessionAttributes().put("userId",newUser.getId());
@@ -48,8 +49,8 @@ public class WebSocketUserController {
 
     @MessageMapping("/chat/leave")
     @SendTo("/topic/public/activeUsers")
-    public List<User> handleUserLeave(@Payload UserDto userDto,
-                             SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
+    public List<RedisUserDto> handleUserLeave(@Payload UserDto userDto,
+                                              SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws Exception{
 
         String userId = (String) simpMessageHeaderAccessor.getSessionAttributes().get("userId");
         simpMessageHeaderAccessor.getSessionAttributes().remove("userId");

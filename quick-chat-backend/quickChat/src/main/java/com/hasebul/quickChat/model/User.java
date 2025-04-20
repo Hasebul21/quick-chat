@@ -36,7 +36,8 @@ public class User {
     private String hobbies;
     private String instagram;
     private Long publishedPostCount;
-
+    @Lob
+    private byte[] profileImage;
     public User(String userName, String password, String userEmail){
         this.userName = userName;
         this.userEmail = userEmail;

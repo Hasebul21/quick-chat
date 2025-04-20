@@ -70,6 +70,11 @@ public class PostController {
         return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.OK);
     }
 
+    @GetMapping("/post/most-liked")
+    public void getMostLikedPost() {
+        postService.findTrendingPost();
+    }
+
     @PostMapping("/post/filter")
     public ResponseEntity<?> postFilter(@RequestBody PostFilterDTO postFilterDTO){
         List<Post> list = postService.filterResult(postFilterDTO);

@@ -43,6 +43,10 @@ export class PostService {
     return this.http.delete<any>(`${this.url}/post/${id}`)
   }
 
+  getMostLikedPost(): Observable<void> {
+    return this.http.get<void>(`${this.url}/post/most-liked`)
+  }
+
   getPostsByFilter(filter: any): Observable<any[]> {
     return this.http.post<any[]>(`${this.url}/post/filter`, filter)
   }

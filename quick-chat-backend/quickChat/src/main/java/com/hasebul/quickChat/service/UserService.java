@@ -6,6 +6,7 @@ import com.hasebul.quickChat.event.UserLoginEvent;
 import com.hasebul.quickChat.event.UserLogoutEvent;
 import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.AuthRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
@@ -71,6 +73,7 @@ public class UserService {
     public User updateUserInfo(Long id, UserDto userDto) {
         User user = authRepo.findById(id).orElse(null);
         if (user != null) {
+            // Update fields if present in UserDto
             if (userDto.getBio() != null) user.setBio(userDto.getBio());
             if (userDto.getPortfolio() != null) user.setPortfolio(userDto.getPortfolio());
             if (userDto.getSkills() != null) user.setSkills(userDto.getSkills());
@@ -78,6 +81,11 @@ public class UserService {
             if (userDto.getHobbies() != null) user.setHobbies(userDto.getHobbies());
             if (userDto.getInstagram() != null) user.setInstagram(userDto.getInstagram());
             if (userDto.getProfessionalTitle() != null) user.setProfessionalTitle(userDto.getProfessionalTitle());
+
+            // Update profile image if present in UserDto
+            if (userDto.getProfileImage() != null) {
+                user.setProfileImage(userDto.getProfileImage());
+            }
 
             return authRepo.save(user);
         }

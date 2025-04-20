@@ -7,10 +7,12 @@ import com.hasebul.quickChat.model.Post;
 import com.hasebul.quickChat.repository.PostRepo;
 import com.hasebul.quickChat.utils.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,9 @@ public class PostService {
 
     @Autowired
     private PostRepo postRepo;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     private ElasticsearchOperations elasticsearchOperations;
 
@@ -83,20 +88,37 @@ public class PostService {
             }
             postRepo.save(post);
         }
-        return post;
-    }
-
-    public Post updatePostDislikeCount(String id, int dislikeCount) {
-        Post post = postRepo.findById(id).orElse(null);
-        if (post != null) {
-            post.setDislikeCount(dislikeCount);
-            postRepo.save(post);
-        }
+        simpMessagingTemplate.convertAndSend("/topic/public/treding-post", getMostLikesPost());
         return post;
     }
 
     public void deletePost(String id) {
         postRepo.deleteById(id);
+        simpMessagingTemplate.convertAndSend("/topic/public/treding-post", getMostLikesPost());
+    }
+
+    public void findTrendingPost() {
+        List<Post> posts = getMostLikesPost();
+        simpMessagingTemplate.convertAndSend("/topic/public/treding-post", posts);
+    }
+
+    private List<Post> getMostLikesPost(){
+        Query matchQuery = Query.of(q-> q.matchAll(m-> m));
+        NativeQuery nativeQuery = NativeQuery.builder()
+                .withQuery(matchQuery)
+                .withSort(Sort.by(Sort.Order.desc("likeCount")))
+                .withMaxResults(6)
+                .build();
+        SearchHits<Post> searchHits = elasticsearchOperations
+                              .search(
+                                        nativeQuery,
+                                        Post.class,
+                                        IndexCoordinates.of("posts")
+                              );
+        List<Post> posts = new ArrayList<>();
+        searchHits.forEach(hit-> posts.add(hit.getContent()));
+        System.out.println("Most Liked Posts: " + posts);
+        return posts;
     }
 
     public List<Post> filterResult(PostFilterDTO postFilterDTO) {
