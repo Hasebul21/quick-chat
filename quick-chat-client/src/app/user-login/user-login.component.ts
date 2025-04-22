@@ -12,10 +12,10 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './user-login.component.scss'
 })
 export class UserLoginComponent {
-    username: string = 'rithy@quickchat.com';
-    password: string = '12345';
+    username: string = null;
+    password: string = null;
 
-    constructor(private auth : AuthService, 
+    constructor(private auth : AuthService,
       private router : Router,
       private stompService : StompService,
       private toastr: ToastrService
@@ -34,6 +34,6 @@ export class UserLoginComponent {
           this.toastr.error('Failed to logged in user!', 'Error');
         }
       })
-  
+
     }
 }
