@@ -19,7 +19,7 @@ import { NavbarComponent } from "./navbar/navbar.component";
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [MatToolbarModule, FormsModule, CommonModule, RouterModule, NavbarComponent]
+  imports: [MatToolbarModule, FormsModule, CommonModule, RouterModule]
 })
 export class AppComponent {
   title = 'quick-chat';

@@ -38,7 +38,6 @@ export class UserRegistrationComponent {
   }
 
   disableSubmitButton(): boolean {
-    console.log(this.username, this.useremail, this.password, this.confirmPassword);
     return !this.username || !this.useremail || !this.password || this.password !== this.confirmPassword;
   }
 }

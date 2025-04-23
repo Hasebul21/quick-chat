@@ -30,7 +30,6 @@ export class UserProfileComponent {
 
   ngOnInit() {
     this.loggedInUser = this.authService.getLoggedInUser();
-    console.log(this.loggedInUser);
   }
 
   updateProfile() {
@@ -47,22 +46,17 @@ export class UserProfileComponent {
     if (this.profileImage) {
       formData.append('profileImage', this.profileImage);
     }
-  
-    console.log('Sending FormData:');
     for (let [key, val] of formData.entries()) {
-      console.log(`${key}:`, val);
     }
   
     this.authService.updateUserProfile(this.loggedInUser.id, formData).subscribe({
       next: (response) => {
-        console.log('Profile updated successfully', response);
         response.profileImage = `data:image/jpeg;base64,${response.profileImage}`;
         this.authService.setLoggedInUser(response);
         this.toastr.success('Profile updated successfully!', 'Success');
         this.router.navigate(['/home']);
       },
       error: (error) => {
-        console.error('Failed to update profile.', error);
         this.toastr.error('Failed to update profile.', 'Error');
       }
     });
@@ -71,7 +65,5 @@ export class UserProfileComponent {
 
   onFileSelected(event: any) {
     this.profileImage = event.target.files[0];
-    console.log('Selected file:', this.profileImage);
-
   }
 }

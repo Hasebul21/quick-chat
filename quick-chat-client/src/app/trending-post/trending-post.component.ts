@@ -61,13 +61,11 @@ export class TrendingPostComponent implements OnInit, OnChanges {
   connectSocket() {
       const socket = new SockJS('http://localhost:8080/ws');
       this.stompClient = Stomp.over(socket);
-      console.log('Connecting to WebSocket server for trending posts...');
       this.stompClient.connect({}, () => {
         this.isSubscribed = true;
-        console.log('Connected to WebSocket server for trending posts');
         this.stompClient.subscribe(`/topic/public/treding-post`, response => {
           this.trendingPosts = JSON.parse(response.body);
-          console.log(this.trendingPosts);
+
         });
         this.postService.getMostLikedPost().subscribe();
       }, (error) => {

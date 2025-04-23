@@ -45,8 +45,6 @@ export class ChatBoxComponent implements OnChanges, OnInit {
     )
     .subscribe({
       next: (response) => {
-        console.log(response);
-        console.log(this.loginUser, this.selectedUser);
         this.messages = response.map((message: any) => ({
           userName: message.senderName,
           content: message.content,
@@ -61,8 +59,6 @@ export class ChatBoxComponent implements OnChanges, OnInit {
           ...message,
           time: message.time.toLocaleTimeString() // Convert to readable format
         }));
-  
-        console.log(this.messages);
       },
       error: (err) => {
         console.error('Error fetching chat history:', err);
@@ -90,8 +86,6 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   }
 
   sendMessage(content: string) {
-    console.log(content);
-    console.log(this.loginUser, this.selectedUser);
     if (this.stompClient) {
       this.stompClient.send('/app/chat/private/send', { receipt: 'message-receipt' },
         JSON.stringify({
@@ -121,7 +115,6 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   }
 
   addMessageToChat(message: any, direction: any) {
-    console.log(message);
     this.messages.push({
       userName: message.userName,
       content: message.content,

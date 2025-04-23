@@ -59,13 +59,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
-    console.log(this.loggedInUser);
-    console.log('Home component initialized');
-    //this.postService.getMostLikedPost().subscribe();
   }
 
   postPublicly() {
-    console.log(this.loggedInUser);
       const newPost = {
         creatorName : this.loggedInUser.userName,
         creatorEmail : this.loggedInUser.userEmail,
@@ -77,15 +73,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.newPostContent = '';
       this.postService.persistPost(newPost).subscribe(
         response => {
-          console.log('Post created successfully', response);
           this.toastr.success('User logged in successfully!', 'Success');
         },
         error => {
-          console.error('Error creating post', error);
           this.toastr.success('User logged in successfully!', 'Success');
         }
       );
-      console.log(newPost);
   }
 
 }

@@ -23,15 +23,12 @@ export class NavbarComponent {
   }
 
   ngOnInit() {
-    console.log('AppComponent initialized');
     this.loggedInUser = this.auth.getLoggedInUser();
-    console.log(this.loggedInUser);
   }
 
   logout() {
     this.auth.logout(this.loggedInUser.userEmail).subscribe({
       next: (response) => {
-        console.log('Logout successful', response);
         this.auth.removeLoggedInUser();
         this.loggedInUser = null;
         this.toastr.success('Logout successfully!', 'Success');

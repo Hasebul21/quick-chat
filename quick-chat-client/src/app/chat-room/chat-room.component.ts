@@ -36,29 +36,24 @@ export class ChatRoomComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
-    console.log("Chat Room Component Initialized");
     this.loginUser = this.authService.getLoggedInUser();
     this.connectSocket();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-     console.log("Chat Room Component Changes Detected", changes);
   }
 
   connectSocket() {
     if (this.stompClient && this.stompClient.connected) {
-      console.log("STOMP client is already connected.");
       return;
     }
     const socket = new SockJS('http://localhost:8080/ws');
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
-      console.log("Connected as " + this.loginUser.userName);
       this.isSelected = true;
       this.isConnected = true;
       this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
-        console.log("Active users update:", response.body);
         this.activeUsers = [...JSON.parse(response.body)];
       });
 

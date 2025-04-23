@@ -82,7 +82,6 @@ export class PostviewComponent {
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
-    console.log('Logged in user:', this.loggedInUser);
     this.loadPosts();
   }
 
@@ -113,9 +112,6 @@ export class PostviewComponent {
     if (this.filter.updatedDate?.lte) {
       this.filter.updatedDate.lte = new Date(this.filter.updatedDate.lte).toISOString();
     }
-
-    console.log('Filter criteria:', this.filter);
-
     this.postService.getPostsByFilter(this.filter).subscribe((posts) => {
       this.allFilteredPosts = posts;
       this.totalPages = Math.ceil(posts.length / 8);
@@ -159,7 +155,6 @@ export class PostviewComponent {
   }
 
   updateLikeCount(id: any, isLike: boolean): void {
-      console.log(this.filteredPosts[id], isLike);
       let count = 0;
       if (isLike) {
         count = this.filteredPosts[id].likeCount + 1;
@@ -169,7 +164,6 @@ export class PostviewComponent {
       this.filteredPosts[id].postId
       this.postService.updateLikeCount(this.filteredPosts[id].postId, 
         count, isLike).subscribe((response) => {
-        console.log('Post updated successfully:', response);
         this.filteredPosts[id].likeCount = response.likeCount;
         this.filteredPosts[id].dislikeCount = response.dislikeCount;
       }
@@ -195,12 +189,9 @@ export class PostviewComponent {
   }
 
   editPost(post: any): void {
-    console.log('Edit post:', post);
-    // Implement editing logic here
   }
 
   deletePost(post: any): void {
-    console.log('Delete post:', post);
     this.postService.deletePost(post.postId).subscribe((response) => {
       this.toastr.success('Post deleted successfully:', 'Success');
       this.loadPosts();

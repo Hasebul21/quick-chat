@@ -17,20 +17,18 @@ export class SocketService {
   onConnect(): Observable<boolean> {
     return new Observable<boolean>((observer) => {
       if (this.isConnected) {
-        observer.next(true);  // ✅ Emit true if already connected
+        observer.next(true); 
         observer.complete();
         return;
       }
       const socket = new SockJS(this.url);
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect({}, () => {
-        console.log('✅ WebSocket connected');
         this.isConnected = true;
-        observer.next(true);  // ✅ Emit success
+        observer.next(true);
         observer.complete();
       }, (error) => {
-        console.error('❌ WebSocket connection error:', error);
-        observer.error(error);  // ✅ Emit error if connection fails
+        observer.error(error);
       });
     });
   }
@@ -38,14 +36,10 @@ export class SocketService {
   subscribeToActiveUser(): Observable<any> {
     return new Observable(observer => {
       if (!this.stompClient || !this.isConnected) {
-        console.error("❌ WebSocket not connected. Cannot subscribe.");
         observer.error("WebSocket not connected");
         return;
       }
-
-      console.log(this.stompClient);
       this.stompClient.subscribe('/topic/public/activeUsers', response => {
-        console.log(response)
         const message = JSON.parse(response.body);
         observer.next(message);
       });
@@ -55,14 +49,11 @@ export class SocketService {
   subscribeTo(): Observable<any> {
     return new Observable(observer => {
       if (!this.stompClient || !this.isConnected) {
-        console.error("❌ WebSocket not connected. Cannot subscribe.");
         observer.error("WebSocket not connected");
         return;
       }
 
       this.stompClient.subscribe(`/topic/public`, response => {
-        console.log('fetching user')
-        console.log(response)
         const message = JSON.parse(response.body);
         observer.next(message);
       });
@@ -70,14 +61,9 @@ export class SocketService {
   }
 
   sendMessageToNewUser(userName: string, userEmail: string) {
-    console.log('sending')
-    console.log(this.stompClient);
-    console.log(this.isConnected)
     if (!this.stompClient || !this.isConnected) {
-      console.error("❌ WebSocket not connected. Cannot send message.");
       return;
     }
-    console.log(this.stompClient);
     this.stompClient.send('/app/addUser', {}, JSON.stringify(
       { 
         senderName: userName, 
@@ -87,13 +73,9 @@ export class SocketService {
   }
 
   sendMessageToActiveUser() {
-    console.log('sending')
-    console.log(this.stompClient);
     if (!this.stompClient || !this.isConnected) {
-      console.error("❌ WebSocket not connected. Cannot send message.");
       return;
     }
-    console.log(this.stompClient);
     this.stompClient.send('/app/getAllUser', {}, null)
   }
 }

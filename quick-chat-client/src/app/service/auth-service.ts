@@ -39,7 +39,6 @@ export class AuthService {
   
   setLoggedInUser(user: any): void {
     sessionStorage.setItem('loggedInUser', JSON.stringify(user));
-    console.log(sessionStorage);
   }
 
   getLoggedInUser(): any {
