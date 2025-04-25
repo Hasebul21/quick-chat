@@ -69,9 +69,9 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.stompClient) {
-      this.stompClient.disconnect();
-    }
+    // if (this.stompClient) {
+    //   this.stompClient.disconnect();
+    // }
   }
 
 
@@ -89,17 +89,19 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   }
 
   sendMessage(content: string) {
+    console.log('Sending message:', content);
+    console.log(this.stompClient);
     if (this.stompClient) {
       this.stompClient.send('/app/chat/private/send', { receipt: 'message-receipt' },
         JSON.stringify({
           senderName: this.loginUser.userName,
           senderId: this.loginUser.id,
-          senderProfileImage: this.loginUser.profileImage,
           receiverId: this.selectedUser.id,
           receiverName: this.selectedUser.userName,
-          receiverProfileImage: this.selectedUser.profileImage,
           content: content,
         }));
+    } else {
+      console.error('❌ STOMP client not connected. Cannot send message.');
     }
   }
 

@@ -4,11 +4,13 @@ import com.hasebul.quickChat.dto.LoginDto;
 import com.hasebul.quickChat.dto.UserDto;
 import com.hasebul.quickChat.event.UserLoginEvent;
 import com.hasebul.quickChat.event.UserLogoutEvent;
+import com.hasebul.quickChat.event.UserUpdateEvent;
 import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.AuthRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +25,12 @@ public class UserService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    private RedisService redisService;
 
     public User persistUser(UserDto userDto) {
         User user = new User(userDto.getUserName(), userDto.getPassword(), userDto.getUserEmail());
@@ -64,6 +72,7 @@ public class UserService {
     public void logout(LoginDto loginDto) throws Exception {
         User user = findUserByEmail(loginDto.getUserEmail());
         eventPublisher.publishEvent(new UserLogoutEvent(user));
+        simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", redisService.getActiveUsers());
     }
 
     /*
@@ -73,7 +82,7 @@ public class UserService {
     public User updateUserInfo(Long id, UserDto userDto) {
         User user = authRepo.findById(id).orElse(null);
         if (user != null) {
-            // Update fields if present in UserDto
+
             if (userDto.getBio() != null) user.setBio(userDto.getBio());
             if (userDto.getPortfolio() != null) user.setPortfolio(userDto.getPortfolio());
             if (userDto.getSkills() != null) user.setSkills(userDto.getSkills());
@@ -81,13 +90,15 @@ public class UserService {
             if (userDto.getHobbies() != null) user.setHobbies(userDto.getHobbies());
             if (userDto.getInstagram() != null) user.setInstagram(userDto.getInstagram());
             if (userDto.getProfessionalTitle() != null) user.setProfessionalTitle(userDto.getProfessionalTitle());
+            if(userDto.getPublishedPostCount() != null) user.setPublishedPostCount(userDto.getPublishedPostCount());
 
-            // Update profile image if present in UserDto
             if (userDto.getProfileImage() != null) {
                 user.setProfileImage(userDto.getProfileImage());
             }
 
-            return authRepo.save(user);
+            User updatedUser = authRepo.save(user);
+            eventPublisher.publishEvent(new UserUpdateEvent(updatedUser));
+            return updatedUser;
         }
         return null;
     }

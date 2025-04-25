@@ -9,8 +9,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
 public class UserAuthenticationEvent {
     @Autowired
     private RedisService redisService;
@@ -27,5 +29,13 @@ public class UserAuthenticationEvent {
     public void UserLogoutEvent(UserLogoutEvent userLogoutEvent) {
         System.out.println("User Logout Event Triggered");
         redisService.removeActiveUser(userLogoutEvent.getUser());
+    }
+
+
+    @EventListener
+    @Async
+    public void updateUserEvent(UserUpdateEvent userUpdateEvent){
+        System.out.println("User Update Event Triggered");
+        redisService.addActiveUser(userUpdateEvent.getUser());
     }
 }

@@ -23,6 +23,7 @@ export class UserStatusComponent implements OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.loginUser);
     console.log(this.activeUsers);
   }
 

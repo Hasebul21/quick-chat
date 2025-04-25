@@ -101,3 +101,30 @@
   font-size: 0.75rem;
   color: #999;
 }
+
+.welcome-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4a90e2;
+}
+
+.welcome-message {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  margin: 0;
+}

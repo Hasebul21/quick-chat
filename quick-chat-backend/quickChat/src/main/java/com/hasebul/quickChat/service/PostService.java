@@ -3,7 +3,9 @@ package com.hasebul.quickChat.service;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import com.hasebul.quickChat.dto.PostDto;
 import com.hasebul.quickChat.dto.PostFilterDTO;
+import com.hasebul.quickChat.dto.UserDto;
 import com.hasebul.quickChat.model.Post;
+import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.PostRepo;
 import com.hasebul.quickChat.utils.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,9 @@ public class PostService {
 
     private ElasticsearchOperations elasticsearchOperations;
 
+    @Autowired
+    private UserService userService;
+
     public PostService(ElasticsearchOperations elasticsearchOperations) {
         this.elasticsearchOperations = elasticsearchOperations;
     }
@@ -44,6 +49,10 @@ public class PostService {
         post.setUpdatedDate(LocalDateTime.now().toString());
         Post savedPost = postRepo.save(post);
         findTrendingPost();
+        User user = userService.findUserByEmail(savedPost.getCreatorEmail());
+        user.setPublishedPostCount(user.getPublishedPostCount() == null ? 1 : user.getPublishedPostCount() + 1);
+        userService.updateUserInfo(user.getId(), Helper.userEntityToDto(user));
+        simpMessagingTemplate.convertAndSendToUser(user.getId().toString(), "/post-count/queue", user.getPublishedPostCount());
         return savedPost;
     }
 
@@ -112,7 +121,7 @@ public class PostService {
         NativeQuery nativeQuery = NativeQuery.builder()
                 .withQuery(matchQuery)
                 .withSort(Sort.by(Sort.Order.desc("likeCount")))
-                .withMaxResults(6)
+                .withMaxResults(8)
                 .build();
         SearchHits<Post> searchHits = elasticsearchOperations
                               .search(

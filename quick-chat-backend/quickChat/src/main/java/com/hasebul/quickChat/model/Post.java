@@ -31,7 +31,7 @@ public class Post {
     @Field(type = FieldType.Keyword)
     private String updatedDate;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text, index = false)
     private String creatorImage;
 
     @Field(type = FieldType.Integer)
