@@ -18,7 +18,7 @@
         [ngClass]="{ 'current-user': activeUser.userEmail === loginUser.userEmail }"
       >
         <div class="user-avatar">
-          <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="User avatar" />
+          <img [src]="activeUser?.profileImage" alt="User avatar" />
           <span class="status online"></span>
         </div>
         <div class="user-details">

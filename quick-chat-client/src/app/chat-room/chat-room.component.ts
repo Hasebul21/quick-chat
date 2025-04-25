@@ -30,9 +30,9 @@ export class ChatRoomComponent implements OnChanges, OnInit {
   login = false;
   isConnected = false;
 
-  constructor(private cdr: ChangeDetectorRef, 
-    private stompService : StompService, private authService: AuthService) {
-     
+  constructor(private cdr: ChangeDetectorRef,
+    private stompService: StompService, private authService: AuthService) {
+
   }
 
   ngOnInit(): void {
@@ -54,6 +54,7 @@ export class ChatRoomComponent implements OnChanges, OnInit {
       this.isSelected = true;
       this.isConnected = true;
       this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
+        console.log(response);
         this.activeUsers = [...JSON.parse(response.body)];
       });
 

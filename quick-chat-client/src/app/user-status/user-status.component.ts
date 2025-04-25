@@ -14,18 +14,19 @@ import { Stomp } from '@stomp/stompjs';
 export class UserStatusComponent implements OnChanges {
   @Input() loginUser: any;
   @Input() activeUsers: any[] = [];
-  @Output() selectedUserEvent : EventEmitter<any> = new EventEmitter<any>();
+  @Output() selectedUserEvent: EventEmitter<any> = new EventEmitter<any>();
   private stompClient: any | undefined;
 
   constructor(
     private userService: UserService,
     private sockeService: SocketService
-  ) {}
+  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.activeUsers);
   }
 
-  selectUser(selectedUser : any){
+  selectUser(selectedUser: any) {
     this.selectedUserEvent.emit(selectedUser);
   }
 }

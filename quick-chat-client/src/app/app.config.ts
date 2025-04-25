@@ -14,8 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
+import { MatDialogModule } from '@angular/material/dialog';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes)
@@ -31,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     MatSelectModule,
     MatMenuModule,
     FormsModule,
+    MatDialogModule,
     provideHttpClient(withInterceptorsFromDi())
   ],
 };
