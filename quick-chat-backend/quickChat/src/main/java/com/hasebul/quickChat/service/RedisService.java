@@ -14,13 +14,10 @@ import java.util.Set;
 @Service
 public class RedisService {
 
-    @Value("${active.user.key}")
-    private String activeUserKey;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
-    // Convert User to RedisUserDto and add to Redis set
     public void addActiveUser(User user) {
         if(isMember(user))
             removeActiveUser(user);
@@ -38,21 +35,24 @@ public class RedisService {
                 user.getPublishedPostCount(),
                 user.getProfileImage()
         );
-        redisTemplate.opsForValue().set(user.getId().toString(), redisUserDto);
+        redisTemplate.opsForHash().put("activeUsers", user.getId().toString(), redisUserDto);
+
     }
 
-    // Convert User to RedisUserDto and remove from Redis set
     public void removeActiveUser(User user) {
-        redisTemplate.opsForValue().remove(user.getId().toString());
+        redisTemplate.opsForHash().delete("activeUsers", user.getId().toString());
     }
 
-    // Retrieve all active users from Redis and convert to List<RedisUserDto>
     public List<RedisUserDto> getActiveUsers() {
-//        Set<RedisUserDto> redisUserDtos = redisTemplate.opsForSet().members(activeUserKey);
-//        return new ArrayList<>(redisUserDtos);
+        List<Object> userDtos = redisTemplate.opsForHash().values("activeUsers");
+        List<RedisUserDto> activeUsers = new ArrayList<>();
+        for (Object userDto : userDtos) {
+            activeUsers.add((RedisUserDto) userDto);
+        }
+        return activeUsers;
     }
 
-    public boolean isMember(User user){
-        return redisTemplate.opsForValue().get(user.getId().toString()) != null;
+    public boolean isMember(User user) {
+        return redisTemplate.opsForHash().hasKey("activeUsers", user.getId().toString());
     }
 }
