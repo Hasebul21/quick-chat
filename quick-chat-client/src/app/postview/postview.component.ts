@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PostService } from '../service/post.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +19,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { AuthService } from '../service/auth-service';
 import { NavbarComponent } from "../navbar/navbar.component";
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
+import { PosteditComponent } from '../postedit/postedit.component';
 
 @Component({
   selector: 'app-postview',
@@ -41,7 +43,7 @@ import { ToastrService } from 'ngx-toastr';
     MatDatepickerModule,
     MatNativeDateModule,
     NavbarComponent
-],
+  ],
   templateUrl: './postview.component.html',
   styleUrls: ['./postview.component.scss']
 })
@@ -53,6 +55,7 @@ export class PostviewComponent {
   filteredPosts: any[] = [];
   showFilterOptions = false;
   loggedInUser: any = null;
+  readonly dialog = inject(MatDialog);
 
   filter = {
     creatorName: null,
@@ -76,9 +79,9 @@ export class PostviewComponent {
   };
 
   constructor(private postService: PostService,
-              private authService : AuthService,
-              private toastr: ToastrService
-  ) {}
+    private authService: AuthService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
@@ -155,22 +158,22 @@ export class PostviewComponent {
   }
 
   updateLikeCount(id: any, isLike: boolean): void {
-      let count = 0;
-      if (isLike) {
-        count = this.filteredPosts[id].likeCount + 1;
-      } else {
-        count = this.filteredPosts[id].dislikeCount + 1;
-      }
-      this.filteredPosts[id].postId
-      this.postService.updateLikeCount(this.filteredPosts[id].postId, 
-        count, isLike).subscribe((response) => {
+    let count = 0;
+    if (isLike) {
+      count = this.filteredPosts[id].likeCount + 1;
+    } else {
+      count = this.filteredPosts[id].dislikeCount + 1;
+    }
+    this.filteredPosts[id].postId
+    this.postService.updateLikeCount(this.filteredPosts[id].postId,
+      count, isLike).subscribe((response) => {
         this.filteredPosts[id].likeCount = response.likeCount;
         this.filteredPosts[id].dislikeCount = response.dislikeCount;
       }
-      , (error) => {
-        console.error('Error updating post:', error);
-      }
-    );
+        , (error) => {
+          console.error('Error updating post:', error);
+        }
+      );
   }
 
 
@@ -189,6 +192,24 @@ export class PostviewComponent {
   }
 
   editPost(post: any): void {
+    this.dialog.open(PosteditComponent, {
+      data: post,
+      width: '800px',
+      height: '600px',
+      disableClose: true,
+      autoFocus: false
+    }).afterClosed().subscribe((result) => {
+      if (result) {
+        console.log(result);
+        this.postService.updatePost(post.postId, result).subscribe((response) => {
+          this.toastr.success('Post updated successfully:', 'Success');
+          this.loadPosts();
+        }, (error) => {
+          this.toastr.error('Error updating post', 'Error');
+        });
+      }
+    }
+    );
   }
 
   deletePost(post: any): void {

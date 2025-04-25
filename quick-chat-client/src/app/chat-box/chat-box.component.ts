@@ -24,11 +24,11 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   messages: any[] = [];
   private isSubscribed: boolean = false;
 
-  constructor(private chatService : ChatService, 
-    private stompService :StompService, private auth : AuthService){}
+  constructor(private chatService: ChatService,
+    private stompService: StompService, private auth: AuthService) { }
 
   ngOnInit(): void {
-     
+    console.log(this.loginUser, this.selectedUser);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -40,36 +40,38 @@ export class ChatBoxComponent implements OnChanges, OnInit {
       this.chatService.getAllChats(this.loginUser.id, this.selectedUser.id),
       this.chatService.getAllChats(this.selectedUser.id, this.loginUser.id)
     ])
-    .pipe(
-      map(([messages1, messages2]) => [...messages1, ...messages2])
-    )
-    .subscribe({
-      next: (response) => {
-        this.messages = response.map((message: any) => ({
-          userName: message.senderName,
-          content: message.content,
-          time: new Date(message.createdOn),
-          direction: message.senderId == this.loginUser.id ? 'right' : 'left'
-        }));
-  
-        // Sort messages by time (ascending order)
-        this.messages.sort((a, b) => a.time.getTime() - b.time.getTime());
+      .pipe(
+        map(([messages1, messages2]) => [...messages1, ...messages2])
+      )
+      .subscribe({
+        next: (response) => {
+          this.messages = response.map((message: any) => ({
+            userName: message.senderName,
+            senderProfileImage: message.senderProfileImage,
+            receiverProfileImage: message.receiverProfileImage,
+            content: message.content,
+            time: new Date(message.createdOn),
+            direction: message.senderId == this.loginUser.id ? 'right' : 'left'
+          }));
 
-        this.messages = this.messages.map(message => ({
-          ...message,
-          time: message.time.toLocaleTimeString() // Convert to readable format
-        }));
-      },
-      error: (err) => {
-        console.error('Error fetching chat history:', err);
-      },
-    });
+          // Sort messages by time (ascending order)
+          this.messages.sort((a, b) => a.time.getTime() - b.time.getTime());
+
+          this.messages = this.messages.map(message => ({
+            ...message,
+            time: message.time.toLocaleTimeString() // Convert to readable format
+          }));
+        },
+        error: (err) => {
+          console.error('Error fetching chat history:', err);
+        },
+      });
   }
 
   ngOnDestroy(): void {
-    if (this.stompClient) {
-      this.stompClient.disconnect();
-    }
+    // if (this.stompClient) {
+    //   this.stompClient.disconnect();
+    // }
   }
 
 
@@ -78,6 +80,7 @@ export class ChatBoxComponent implements OnChanges, OnInit {
     this.content = '';
     this.addMessageToChat({
       userName: this.loginUser.userName,
+      senderProfileImage: this.loginUser.profileImage,
       content: tmp,
       time: new Date().toLocaleTimeString(),
     }, 'right');
@@ -86,6 +89,8 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   }
 
   sendMessage(content: string) {
+    console.log('Sending message:', content);
+    console.log(this.stompClient);
     if (this.stompClient) {
       this.stompClient.send('/app/chat/private/send', { receipt: 'message-receipt' },
         JSON.stringify({
@@ -95,6 +100,8 @@ export class ChatBoxComponent implements OnChanges, OnInit {
           receiverName: this.selectedUser.userName,
           content: content,
         }));
+    } else {
+      console.error('❌ STOMP client not connected. Cannot send message.');
     }
   }
 

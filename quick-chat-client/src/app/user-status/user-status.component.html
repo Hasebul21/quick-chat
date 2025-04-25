@@ -1,4 +1,8 @@
 <div class="users-container">
+  <div class="welcome-container">
+    <img class="user-avatar" [src]="loginUser?.profileImage" alt="User avatar" />
+    <p class="welcome-message">Hi {{ loginUser.userName }}, welcome to QuickChat!</p>
+  </div>
   <!-- Search Box -->
   <div class="chat-search-box">
     <div class="search-input-group">
@@ -11,14 +15,11 @@
 
   <!-- User List -->
   <ul class="users-list">
-    <ng-container *ngFor="let activeUser of activeUsers">
-      <li
-        class="user-item"
-        (click)="selectUser(activeUser)"
-        [ngClass]="{ 'current-user': activeUser.userEmail === loginUser.userEmail }"
-      >
+  <ng-container *ngFor="let activeUser of activeUsers">
+    <ng-container *ngIf="activeUser.userEmail !== loginUser.userEmail">
+      <li class="user-item" (click)="selectUser(activeUser)">
         <div class="user-avatar">
-          <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="User avatar" />
+          <img [src]="'data:image/jpeg;base64,' + activeUser?.profileImage" alt="User avatar" />
           <span class="status online"></span>
         </div>
         <div class="user-details">
@@ -27,5 +28,6 @@
         </div>
       </li>
     </ng-container>
-  </ul>
+  </ng-container>
+</ul>
 </div>

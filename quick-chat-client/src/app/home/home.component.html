@@ -2,36 +2,7 @@
 <!-- Main Layout -->
 <div class="layout-container">
   <!-- Sidebar -->
-  <aside class="profile-section">
-    <mat-card class="profile-card">
-      <div class="profile-header">
-        <img class="profile-image" [src]="loggedInUser?.profileImage || 'https://robohash.org/robot'"
-          alt="User Photo" />
-
-        <div class="header-info">
-          <h2 class="username">{{loggedInUser.userName}}</h2>
-          <p class="role">{{loggedInUser.professionalTitle}}</p>
-        </div>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="profile-details">
-        <p><strong>Email :</strong> {{loggedInUser.userEmail}}</p>
-        <p><strong>Location :</strong> {{loggedInUser.location}}</p>
-        <p><strong>Joined :</strong> {{loggedInUser.joinDate}}</p>
-        <p><strong>Followers :</strong> 0</p>
-        <p><strong>Following :</strong> 0</p>
-        <p><strong>Published Post :</strong> {{loggedInUser.publishedPostCount}}</p>
-        <p><strong>Bio :</strong> {{loggedInUser.bio}}</p>
-        <p><strong>Portfolio :</strong> <a href="https://johnsportfolio.com"
-            target="_blank">{{loggedInUser.portfolio}}</a></p>
-        <p><strong>Skills :</strong> {{loggedInUser.skills}}</p>
-        <p><strong>Hobbies :</strong>{{loggedInUser.hobbies}}</p>
-        <p><strong>Instagram :</strong> <a href="https://github.com/johndoe"
-            target="_blank">{{loggedInUser.instagram}}</a></p>
-      </div>
-    </mat-card>
-  </aside>
-
+  <app-profile-section [loggedInUser]="loggedInUser"></app-profile-section>
   <!-- Main Feed -->
   <main class="main-feed">
     <!-- New Post Box -->
@@ -49,9 +20,6 @@
         <button mat-raised-button color="primary" (click)="postPublicly()">Post</button>
       </mat-card-actions>
     </mat-card>
-    
-    <p class="fancy-title trending-header">Trending Now</p>
-
     <app-trending-post></app-trending-post>
   </main>
 </div>

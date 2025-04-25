@@ -2,8 +2,10 @@ package com.hasebul.quickChat.utils;
 
 import com.hasebul.quickChat.dto.ChatMessageDto;
 import com.hasebul.quickChat.dto.PostDto;
+import com.hasebul.quickChat.dto.UserDto;
 import com.hasebul.quickChat.model.ChatMessage;
 import com.hasebul.quickChat.model.Post;
+import com.hasebul.quickChat.model.User;
 
 public class Helper {
 
@@ -34,4 +36,29 @@ public class Helper {
 
         return post;
     }
+
+    public static UserDto userEntityToDto(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setUserEmail(user.getUserEmail());
+        dto.setUserName(user.getUserName());
+        dto.setPassword(user.getPassword());
+        dto.setProfessionalTitle(user.getProfessionalTitle());
+        dto.setLocation(user.getLocation());
+        dto.setJoinDate(user.getJoinDate());
+        dto.setBio(user.getBio());
+        dto.setPortfolio(user.getPortfolio());
+        dto.setSkills(user.getSkills());
+        dto.setHobbies(user.getHobbies());
+        dto.setInstagram(user.getInstagram());
+        dto.setPublishedPostCount(user.getPublishedPostCount());
+        dto.setProfileImage(user.getProfileImage());
+
+        return dto;
+    }
+
 }

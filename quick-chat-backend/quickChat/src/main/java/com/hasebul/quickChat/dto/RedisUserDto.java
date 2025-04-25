@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RedisUserDto {
+public class RedisUserDto implements Serializable {
     private Long id;
     private String userEmail;
     private String userName;
@@ -21,4 +22,5 @@ public class RedisUserDto {
     private String hobbies;
     private String instagram;
     private Long publishedPostCount;
+    private byte[] profileImage;
 }

@@ -6,22 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
 public class RedisService {
 
-    @Value("${active.user.key}")
-    private String activeUserKey;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
-    // Convert User to RedisUserDto and add to Redis set
     public void addActiveUser(User user) {
+        if(isMember(user))
+            removeActiveUser(user);
         RedisUserDto redisUserDto = new RedisUserDto(
                 user.getId(),
                 user.getUserEmail(),
@@ -33,32 +34,27 @@ public class RedisService {
                 user.getSkills(),
                 user.getHobbies(),
                 user.getInstagram(),
-                user.getPublishedPostCount()
+                user.getPublishedPostCount(),
+                user.getProfileImage()
         );
-        redisTemplate.opsForSet().add(activeUserKey, redisUserDto);
+        redisTemplate.opsForHash().put("activeUsers", user.getId().toString(), redisUserDto);
+
     }
 
-    // Convert User to RedisUserDto and remove from Redis set
     public void removeActiveUser(User user) {
-        RedisUserDto redisUserDto = new RedisUserDto(
-                user.getId(),
-                user.getUserEmail(),
-                user.getUserName(),
-                user.getProfessionalTitle(),
-                user.getLocation(),
-                user.getBio(),
-                user.getPortfolio(),
-                user.getSkills(),
-                user.getHobbies(),
-                user.getInstagram(),
-                user.getPublishedPostCount()
-        );
-        redisTemplate.opsForSet().remove(activeUserKey, redisUserDto);
+        redisTemplate.opsForHash().delete("activeUsers", user.getId().toString());
     }
 
-    // Retrieve all active users from Redis and convert to List<RedisUserDto>
     public List<RedisUserDto> getActiveUsers() {
-        Set<RedisUserDto> redisUserDtos = redisTemplate.opsForSet().members(activeUserKey);
-        return new ArrayList<>(redisUserDtos);
+        List<Object> userDtos = redisTemplate.opsForHash().values("activeUsers");
+        List<RedisUserDto> activeUsers = new ArrayList<>();
+        for (Object userDto : userDtos) {
+            activeUsers.add((RedisUserDto) userDto);
+        }
+        return activeUsers;
+    }
+
+    public boolean isMember(User user) {
+        return redisTemplate.opsForHash().hasKey("activeUsers", user.getId().toString());
     }
 }

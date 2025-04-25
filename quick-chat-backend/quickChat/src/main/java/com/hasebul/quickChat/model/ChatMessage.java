@@ -36,10 +36,14 @@ public class ChatMessage {
     @Field(type = FieldType.Keyword)
     private String receiverId;
 
-
     @Field(type = FieldType.Text)
     private String content;
 
     @Field(type = FieldType.Keyword)
     private String createdOn;
+
+    @Field(type = FieldType.Keyword)
+    private String senderProfileImage;
+    @Field(type = FieldType.Keyword)
+    private String receiverProfileImage;
 }

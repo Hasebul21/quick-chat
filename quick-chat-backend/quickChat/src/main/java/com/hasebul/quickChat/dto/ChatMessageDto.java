@@ -2,6 +2,8 @@ package com.hasebul.quickChat.dto;
 
 
 import lombok.*;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 
@@ -17,4 +19,6 @@ public class ChatMessageDto {
     private String receiverName;
     private String content;
     private LocalDateTime createdOn;
+    private String senderProfileImage;
+    private String receiverProfileImage;
 }

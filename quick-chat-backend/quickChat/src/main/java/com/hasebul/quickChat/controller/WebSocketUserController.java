@@ -54,11 +54,9 @@ public class WebSocketUserController {
 
         String userId = (String) simpMessageHeaderAccessor.getSessionAttributes().get("userId");
         simpMessageHeaderAccessor.getSessionAttributes().remove("userId");
-
         User newUser = userService.findUserByEmail(userDto.getUserEmail());
         redisService.removeActiveUser(newUser);
-
-        //simpMessagingTemplate.convertAndSend("/topic/public/activeUsers", redisService.getActiveUsers());
+        System.out.println("User left: " + userId);
         return redisService.getActiveUsers();
     }
 

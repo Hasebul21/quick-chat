@@ -19,6 +19,7 @@ import { NavbarComponent } from "../navbar/navbar.component";
 import { TrendingPostComponent } from "../trending-post/trending-post.component";
 import { StompService } from '../service/stomp.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProfileSectionComponent } from "../profile-section/profile-section.component";
 
 @Component({
   selector: 'app-home',
@@ -39,7 +40,8 @@ import { ToastrService } from 'ngx-toastr';
     RouterModule,
     MatSnackBarModule,
     NavbarComponent,
-    TrendingPostComponent
+    TrendingPostComponent,
+    ProfileSectionComponent
 ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
