@@ -21,4 +21,5 @@ public class RedisUserDto {
     private String hobbies;
     private String instagram;
     private Long publishedPostCount;
+    private byte[] profileImage;
 }

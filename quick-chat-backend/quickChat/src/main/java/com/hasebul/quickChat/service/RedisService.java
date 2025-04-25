@@ -22,6 +22,8 @@ public class RedisService {
 
     // Convert User to RedisUserDto and add to Redis set
     public void addActiveUser(User user) {
+        if(isMember(user))
+            removeActiveUser(user);
         RedisUserDto redisUserDto = new RedisUserDto(
                 user.getId(),
                 user.getUserEmail(),
@@ -33,32 +35,24 @@ public class RedisService {
                 user.getSkills(),
                 user.getHobbies(),
                 user.getInstagram(),
-                user.getPublishedPostCount()
+                user.getPublishedPostCount(),
+                user.getProfileImage()
         );
-        redisTemplate.opsForSet().add(activeUserKey, redisUserDto);
+        redisTemplate.opsForValue().set(user.getId().toString(), redisUserDto);
     }
 
     // Convert User to RedisUserDto and remove from Redis set
     public void removeActiveUser(User user) {
-        RedisUserDto redisUserDto = new RedisUserDto(
-                user.getId(),
-                user.getUserEmail(),
-                user.getUserName(),
-                user.getProfessionalTitle(),
-                user.getLocation(),
-                user.getBio(),
-                user.getPortfolio(),
-                user.getSkills(),
-                user.getHobbies(),
-                user.getInstagram(),
-                user.getPublishedPostCount()
-        );
-        redisTemplate.opsForSet().remove(activeUserKey, redisUserDto);
+        redisTemplate.opsForValue().remove(user.getId().toString());
     }
 
     // Retrieve all active users from Redis and convert to List<RedisUserDto>
     public List<RedisUserDto> getActiveUsers() {
-        Set<RedisUserDto> redisUserDtos = redisTemplate.opsForSet().members(activeUserKey);
-        return new ArrayList<>(redisUserDtos);
+//        Set<RedisUserDto> redisUserDtos = redisTemplate.opsForSet().members(activeUserKey);
+//        return new ArrayList<>(redisUserDtos);
+    }
+
+    public boolean isMember(User user){
+        return redisTemplate.opsForValue().get(user.getId().toString()) != null;
     }
 }
