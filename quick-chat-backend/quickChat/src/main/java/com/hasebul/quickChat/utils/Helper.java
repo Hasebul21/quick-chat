@@ -6,8 +6,35 @@ import com.hasebul.quickChat.dto.UserDto;
 import com.hasebul.quickChat.model.ChatMessage;
 import com.hasebul.quickChat.model.Post;
 import com.hasebul.quickChat.model.User;
+import net.coobird.thumbnailator.Thumbnails;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class Helper {
+
+
+    public static byte[] compressAndResizeImage(byte[] inputImage) throws IOException {
+        ByteArrayInputStream in = new ByteArrayInputStream(inputImage);
+        BufferedImage originalImage = ImageIO.read(in);
+
+        if (originalImage == null) {
+            throw new IOException("Could not read image from input byte array.");
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        Thumbnails.of(originalImage)
+                .size(800, 800)
+                .outputFormat("jpg")
+                .outputQuality(0.5)
+                .toOutputStream(out);
+
+        return out.toByteArray();
+    }
 
     public static ChatMessage mapChatDtoToChatEntity(ChatMessageDto dto) {
         ChatMessage chatMessage = new ChatMessage();

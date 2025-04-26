@@ -62,7 +62,7 @@ public class UserController {
             @RequestPart("bio") Optional<String> bio,
             @RequestPart("skills") Optional<String> skills,
             @RequestPart("hobbies") Optional<String> hobbies
-    ) {
+    ) throws IOException {
         UserDto userDto = new UserDto();
         title.ifPresent(userDto::setProfessionalTitle);
         location.ifPresent(userDto::setLocation);

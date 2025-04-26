@@ -7,12 +7,14 @@ import com.hasebul.quickChat.event.UserLogoutEvent;
 import com.hasebul.quickChat.event.UserUpdateEvent;
 import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.AuthRepo;
+import com.hasebul.quickChat.utils.Helper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +81,7 @@ public class UserService {
       Use Reference to update user info
      */
 
-    public User updateUserInfo(Long id, UserDto userDto) {
+    public User updateUserInfo(Long id, UserDto userDto) throws IOException {
         User user = authRepo.findById(id).orElse(null);
         if (user != null) {
 
@@ -93,7 +95,8 @@ public class UserService {
             if(userDto.getPublishedPostCount() != null) user.setPublishedPostCount(userDto.getPublishedPostCount());
 
             if (userDto.getProfileImage() != null) {
-                user.setProfileImage(userDto.getProfileImage());
+                byte[] profileImage = Helper.compressAndResizeImage(userDto.getProfileImage());
+                user.setProfileImage(profileImage);
             }
 
             User updatedUser = authRepo.save(user);

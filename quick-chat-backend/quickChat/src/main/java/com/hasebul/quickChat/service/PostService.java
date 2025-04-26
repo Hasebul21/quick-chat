@@ -18,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class PostService {
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
-    public Post createPost(PostDto postDto) {
+    public Post createPost(PostDto postDto) throws IOException {
         Post post = Helper.PostEntityToDto(postDto);
         post.setCreatedDate(LocalDateTime.now().toString());
         post.setUpdatedDate(LocalDateTime.now().toString());

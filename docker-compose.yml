@@ -26,10 +26,12 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elastic
+      - quickchat-network
     ports:
       - "9200:9200"
       - "9300:9300"
+    volumes:
+      - elasticsearch-data:/var/lib/elasticsearch/data
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.3
@@ -37,16 +39,28 @@ services:
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     networks:
-      - elastic
+      - quickchat-network
     ports:
       - "5601:5601"
+
+  redis:
+    image : redis:latest
+    container_name: quickchat_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - quickchat-network
+    volumes:
+      - redis-data:/var/lib/redis/data
 
 volumes:
   postgres-data:
     driver: local
+  redis-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
 
 networks:
   quickchat-network:
-    driver: bridge
-  elastic:
     driver: bridge

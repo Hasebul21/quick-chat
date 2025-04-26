@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("/post")
-    public ResponseEntity<?> createPost(@RequestBody PostDto postDto) {
+    public ResponseEntity<?> createPost(@RequestBody PostDto postDto) throws IOException {
        Post savedPost = postService.createPost(postDto);
        return ResponseEntity.ok(savedPost);
     }
