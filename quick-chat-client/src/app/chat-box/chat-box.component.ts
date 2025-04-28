@@ -28,7 +28,6 @@ export class ChatBoxComponent implements OnChanges, OnInit {
     private stompService: StompService, private auth: AuthService) { }
 
   ngOnInit(): void {
-    console.log(this.loginUser, this.selectedUser);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -80,7 +79,6 @@ export class ChatBoxComponent implements OnChanges, OnInit {
     this.content = '';
     this.addMessageToChat({
       userName: this.loginUser.userName,
-      senderProfileImage: this.loginUser.profileImage,
       content: tmp,
       time: new Date().toLocaleTimeString(),
     }, 'right');
@@ -112,6 +110,7 @@ export class ChatBoxComponent implements OnChanges, OnInit {
     this.stompClient.connect({}, () => {
       this.isSubscribed = true;
       this.stompClient.subscribe(`/user/${this.loginUser.id}/message/queue`, response => {
+        console.log('Received message:', response);
         const received = JSON.parse(response.body);
         this.recivedMessage = JSON.parse(response.body);
         this.addMessageToChat(received, 'left');
@@ -123,8 +122,9 @@ export class ChatBoxComponent implements OnChanges, OnInit {
 
   addMessageToChat(message: any, direction: any) {
     this.messages.push({
-      userName: message.userName,
+      userName: (direction === 'right') ? message.userName : message.senderName,
       content: message.content,
+      profileImage: (direction === 'left') ? `data:image/jpeg;base64,${this.selectedUser.profileImage}` : `${this.loginUser.profileImage}`,
       time: new Date().toLocaleTimeString(),
       direction: direction
     });
