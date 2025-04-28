@@ -15,7 +15,7 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("localhost"); // Docker container name = host in the bridge network
+        configuration.setHostName("localhost");
         configuration.setPort(6379);
         return new JedisConnectionFactory(configuration);
     }

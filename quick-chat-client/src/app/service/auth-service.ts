@@ -49,4 +49,9 @@ export class AuthService {
   removeLoggedInUser(): void {
     sessionStorage.removeItem('loggedInUser');
   }
+
+  isAuthenticated(): boolean {
+    const user = this.getLoggedInUser();
+    return user !== null && user !== undefined;
+  }
 }
