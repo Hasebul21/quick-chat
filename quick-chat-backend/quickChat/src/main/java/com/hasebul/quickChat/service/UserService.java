@@ -8,11 +8,11 @@ import com.hasebul.quickChat.event.UserUpdateEvent;
 import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.AuthRepo;
 import com.hasebul.quickChat.utils.Helper;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
