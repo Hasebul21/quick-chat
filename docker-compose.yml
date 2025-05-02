@@ -69,6 +69,19 @@ services:
       - "8080:8080"
     entrypoint: ["/bin/sh", "-c", "while ! curl -s http://elasticsearch:9200; do echo 'Waiting for Elasticsearch...'; sleep 2; done; exec java -jar /quickChat-0.0.1-SNAPSHOT.jar"]
 
+  quickchat-frontend:
+    container_name: quickchat_frontend
+    build:
+      context: ./quick-chat-client
+      dockerfile: Dockerfile
+    depends_on:
+      - quickchat-backend
+    networks:
+      - quickchat-network
+    ports:
+      - "4200:4200"
+    entrypoint: ["/bin/sh", "-c", "while ! curl -s http://quickchat-backend:8080; do echo 'Waiting for Backend...'; sleep 2; done; exec npm start"]
+
 networks:
   quickchat-network:
     driver: bridge

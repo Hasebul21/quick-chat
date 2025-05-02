@@ -2,7 +2,7 @@ FROM openjdk:17-jdk-alpine
 MAINTAINER quickchat.com
 
 # Install curl
-RUN apk add --no-cache curl
+RUN apk update && apk add --no-cache curl bash
 
 # Copy the JAR file into the container
 COPY target/quickChat-0.0.1-SNAPSHOT.jar quickChat-0.0.1-SNAPSHOT.jar
