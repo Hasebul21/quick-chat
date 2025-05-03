@@ -2,6 +2,7 @@ package com.hasebul.quickChat.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.json.JsonData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hasebul.quickChat.dto.PostDto;
 import com.hasebul.quickChat.dto.PostFilterDTO;
 import com.hasebul.quickChat.model.Post;
@@ -9,11 +10,19 @@ import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.PostRepo;
 import com.hasebul.quickChat.utils.Helper;
 import org.apache.http.util.EntityUtils;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.*;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.PageRequest;
@@ -60,20 +69,20 @@ public class PostService {
 
     public Post createPost(PostDto postDto) throws IOException {
         try {
-            // Convert the PostDto to Post entity
+
             Post post = new Post();
-            post.setPostId(UUID.randomUUID().toString()); // Assuming postId is passed from the DTO
+            post.setPostId(UUID.randomUUID().toString());
             post.setContent(postDto.getContent());
             post.setCreatorName(postDto.getCreatorName());
             post.setCreatorEmail(postDto.getCreatorEmail());
             post.setCreatedDate(LocalDateTime.now().toString());
             post.setUpdatedDate(LocalDateTime.now().toString());
 
-            // Default values for like and dislike counts
+
             post.setLikeCount(0);
             post.setDislikeCount(0);
 
-            // Use low-level client to insert the post into Elasticsearch
+
             RestClient lowLevelClient = client.getLowLevelClient();
             String jsonString = "{\"postId\": \"" + post.getPostId() + "\", " +
                     "\"content\": \"" + post.getContent() + "\", " +
@@ -84,31 +93,26 @@ public class PostService {
                     "\"likeCount\": " + post.getLikeCount() + ", " +
                     "\"dislikeCount\": " + post.getDislikeCount() + "}";
 
-            // Create request to insert post in Elasticsearch
+
             Request lowLevelRequest = new Request("POST", "/posts/_create/" + post.getPostId());
             lowLevelRequest.setJsonEntity(jsonString);
 
-            // Get raw response from Elasticsearch
+
             Response response = lowLevelClient.performRequest(lowLevelRequest);
             String rawBody = EntityUtils.toString(response.getEntity());
-            System.out.println("Raw response for post creation: " + rawBody);
 
-            // Update the user's published post count
+
             User user = userService.findUserByEmail(post.getCreatorEmail());
             user.setPublishedPostCount(Optional.ofNullable(user.getPublishedPostCount()).orElse(0L) + 1);
             userService.updateUserInfo(user.getId(), Helper.userEntityToDto(user));
 
-            // Send the updated published post count to the user
             simpMessagingTemplate.convertAndSendToUser(
                     user.getId().toString(),
                     "/post-count/queue",
                     user.getPublishedPostCount()
             );
 
-            // Call findTrendingPost method after creation
             findTrendingPost();
-
-            // Return the post object, which was just saved to Elasticsearch
             return post;
 
         } catch (IOException e) {
@@ -119,17 +123,59 @@ public class PostService {
 
 
     public List<Post> getAllPosts() {
-        return StreamSupport.stream(postRepo.findAll().spliterator(), false)
-                .sorted((a, b) -> b.getCreatedDate().compareTo(a.getCreatedDate()))
-                .collect(Collectors.toList());
+        List<Post> posts = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            SearchRequest searchRequest = new SearchRequest("posts");
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+            sourceBuilder.sort("createdDate", SortOrder.DESC);
+            sourceBuilder.query(QueryBuilders.matchAllQuery());
+            searchRequest.source(sourceBuilder);
+
+            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+
+            for (org.elasticsearch.search.SearchHit hit : response.getHits().getHits()) {
+                Post post = objectMapper.readValue(hit.getSourceAsString(), Post.class);
+                posts.add(post);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return posts;
     }
 
     public Post getPostById(String id) {
-        return postRepo.findById(id).orElse(null);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            GetRequest getRequest = new GetRequest("posts", id);
+            GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
+            if (getResponse.isExists()) {
+                String json = getResponse.getSourceAsString();
+                return objectMapper.readValue(json, Post.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<Post> getPostsByUserName(String userName) {
-        return postRepo.findPostByCreatorName(userName).map(List::of).orElseGet(List::of);
+        List<Post> posts = new ArrayList<>();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            SearchRequest searchRequest = new SearchRequest("posts");
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+            sourceBuilder.query(QueryBuilders.matchQuery("creatorName", userName));
+            searchRequest.source(sourceBuilder);
+
+            SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
+            for (org.elasticsearch.search.SearchHit hit : response.getHits().getHits()) {
+                posts.add(objectMapper.readValue(hit.getSourceAsString(), Post.class));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return posts;
     }
 
     public List<Post> getPostsByUserEmail(String userEmail) {
@@ -137,14 +183,31 @@ public class PostService {
     }
 
     public Post updatePost(String id, PostDto postDto) {
-        Post post = postRepo.findById(id).orElse(null);
-        if (post != null) {
-            post.setContent(postDto.getContent());
-            post.setCreatorName(postDto.getCreatorName());
-            post.setCreatorEmail(postDto.getCreatorEmail());
-            post.setLikeCount(postDto.getLikeCount());
-            post.setDislikeCount(postDto.getDislikeCount());
-            return postRepo.save(post);
+        try {
+
+            Post post = postRepo.findById(id).orElse(null);
+            if (post != null) {
+                UpdateRequest request = new UpdateRequest("posts", id);
+                String jsonString = "{"
+                        + "\"content\": \"" + postDto.getContent() + "\","
+                        + "\"creatorName\": \"" + postDto.getCreatorName() + "\","
+                        + "\"creatorEmail\": \"" + postDto.getCreatorEmail() + "\","
+                        + "\"likeCount\": " + postDto.getLikeCount() + ","
+                        + "\"dislikeCount\": " + postDto.getDislikeCount()
+                        + "}";
+                request.doc(jsonString, XContentType.JSON);
+
+                client.update(request, RequestOptions.DEFAULT);
+
+                post.setContent(postDto.getContent());
+                post.setCreatorName(postDto.getCreatorName());
+                post.setCreatorEmail(postDto.getCreatorEmail());
+                post.setLikeCount(postDto.getLikeCount());
+                post.setDislikeCount(postDto.getDislikeCount());
+                return postRepo.save(post);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -182,9 +245,17 @@ public class PostService {
             throw new RuntimeException("Failed to update like/dislike count for post: " + postId, e);
         }
     }
+
     public void deletePost(String id) {
-        postRepo.deleteById(id);
-        findTrendingPost();
+        try {
+            DeleteRequest request = new DeleteRequest("posts")
+                    .id(id);
+            client.delete(request, RequestOptions.DEFAULT);
+
+            findTrendingPost();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void findTrendingPost() {
@@ -205,17 +276,12 @@ public class PostService {
     }
 
     private List<Post> getMostLikedPosts() {
-        // Constructing the match_all query
         MatchAllQueryBuilder matchQuery = QueryBuilders.matchAllQuery();
-        System.out.println("Created match query: " + matchQuery);
 
-        // Creating the search query with sorting and pagination
         NativeSearchQuery searchQuery = new NativeSearchQuery(matchQuery);
-        searchQuery.setPageable(PageRequest.of(0, 8)); // Limit results to 8 posts
-        searchQuery.addSort(Sort.by(Sort.Order.desc("likeCount"))); // Sort by like count
-        System.out.println("Search query with pagination and sorting: " + searchQuery);
+        searchQuery.setPageable(PageRequest.of(0, 8));
+        searchQuery.addSort(Sort.by(Sort.Order.desc("likeCount")));
         SearchHits<Post> searchHits = elasticsearchOperations.search(searchQuery, Post.class, IndexCoordinates.of("posts"));
-        System.out.println("Search hits obtained: " + searchHits.getTotalHits());
 
         List<Post> posts = new ArrayList<>();
         for( SearchHit<Post> hit : searchHits) {
@@ -228,7 +294,6 @@ public class PostService {
     public List<Post> filterResult(PostFilterDTO filter) {
         Criteria criteria = new Criteria();
 
-        // Text filters
         if (filter.getCreatorName() != null && !filter.getCreatorName().isEmpty()) {
             criteria = criteria.and("creatorName").is(filter.getCreatorName());
         }
@@ -237,7 +302,6 @@ public class PostService {
             criteria = criteria.and("content").matches(filter.getContent());
         }
 
-        // Numeric filters
         if (filter.getLikeCount() != null) {
             Criteria likeCriteria = new Criteria("likeCount");
             if (filter.getLikeCount().getGte() != null) {
@@ -260,7 +324,6 @@ public class PostService {
             criteria = criteria.and(dislikeCriteria);
         }
 
-        // Date filters
         if (filter.getCreatedDate() != null) {
             Criteria createdDate = new Criteria("createdDate");
             if (filter.getCreatedDate().getGte() != null) {
