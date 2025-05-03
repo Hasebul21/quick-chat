@@ -1,6 +1,5 @@
 package com.hasebul.quickChat.dto;
 
-
 public class PostFilterDTO {
 
     private String creatorName;
@@ -59,12 +58,11 @@ public class PostFilterDTO {
         this.updatedDate = updatedDate;
     }
 
-    // Inner class for range filters (likeCount, dislikeCount)
+    // Inner class for numeric range filters (likeCount, dislikeCount)
     public static class RangeFilter {
         private Integer gte;
         private Integer lte;
 
-        // Getters and Setters
         public Integer getGte() {
             return gte;
         }
@@ -84,10 +82,9 @@ public class PostFilterDTO {
 
     // Inner class for date range filters (createdDate, updatedDate)
     public static class DateRangeFilter {
-        private String gte; // Can be LocalDateTime or String, for date comparison
-        private String lte; // Can be LocalDateTime or String, for date comparison
+        private String gte; // ISO 8601 format recommended (e.g., "2024-01-01T00:00:00Z")
+        private String lte;
 
-        // Getters and Setters
         public String getGte() {
             return gte;
         }

@@ -7,7 +7,6 @@ import com.hasebul.quickChat.model.Post;
 import com.hasebul.quickChat.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,13 +57,32 @@ public class PostController {
     @PutMapping("/posts/{id}/likes")
     public ResponseEntity<Post> updatePostLikeDislikeCount(@PathVariable("id") String postId,
                                                            @RequestBody LikeDislikeRequest likeDislikeRequest) {
-        Post updatedPost = postService.updatePostLikeDislikeCount(postId, likeDislikeRequest.getCount(), likeDislikeRequest.isLike());
-
-        if (updatedPost != null) {
-            return ResponseEntity.ok(updatedPost);
+        if (likeDislikeRequest == null) {
+            return ResponseEntity.badRequest().body(null); // Invalid request body
         }
-        return ResponseEntity.notFound().build();
+
+        // Validate count: it should be a non-negative number
+        if (likeDislikeRequest.getCount() < 0) {
+            return ResponseEntity.badRequest().body(null); // Invalid count
+        }
+
+        try {
+            Post updatedPost = postService.updatePostLikeDislikeCount(postId, likeDislikeRequest.getCount(), likeDislikeRequest.isLike());
+
+            // Check if post was successfully updated
+            if (updatedPost != null) {
+                return ResponseEntity.ok(updatedPost);
+            }
+
+            // If post not found, return 404
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            // Log the error and return 500 Internal Server Error if an unexpected exception occurs
+            System.out.println("Error updating post like/dislike count " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
     @DeleteMapping("/post/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") String id) {
         postService.deletePost(id);

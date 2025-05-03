@@ -1,14 +1,30 @@
 package com.hasebul.quickChat.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class LoginDto {
     private String userEmail;
     private String password;
 
+    public LoginDto() {
+    }
+
+    public LoginDto(String userEmail, String password) {
+        this.userEmail = userEmail;
+        this.password = password;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

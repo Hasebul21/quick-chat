@@ -1,27 +1,40 @@
 package com.hasebul.quickChat.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.json.JsonData;
 import com.hasebul.quickChat.dto.PostDto;
 import com.hasebul.quickChat.dto.PostFilterDTO;
-import com.hasebul.quickChat.dto.UserDto;
 import com.hasebul.quickChat.model.Post;
 import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.PostRepo;
 import com.hasebul.quickChat.utils.Helper;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.client.*;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -31,36 +44,83 @@ public class PostService {
 
     @Autowired
     private PostRepo postRepo;
-
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
-
-    private ElasticsearchOperations elasticsearchOperations;
-
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RestHighLevelClient client;
+
+    private final ElasticsearchOperations elasticsearchOperations;
 
     public PostService(ElasticsearchOperations elasticsearchOperations) {
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
     public Post createPost(PostDto postDto) throws IOException {
-        Post post = Helper.PostEntityToDto(postDto);
-        post.setCreatedDate(LocalDateTime.now().toString());
-        post.setUpdatedDate(LocalDateTime.now().toString());
-        Post savedPost = postRepo.save(post);
-        findTrendingPost();
-        User user = userService.findUserByEmail(savedPost.getCreatorEmail());
-        user.setPublishedPostCount(user.getPublishedPostCount() == null ? 1 : user.getPublishedPostCount() + 1);
-        userService.updateUserInfo(user.getId(), Helper.userEntityToDto(user));
-        simpMessagingTemplate.convertAndSendToUser(user.getId().toString(), "/post-count/queue", user.getPublishedPostCount());
-        return savedPost;
+        try {
+            // Convert the PostDto to Post entity
+            Post post = new Post();
+            post.setPostId(UUID.randomUUID().toString()); // Assuming postId is passed from the DTO
+            post.setContent(postDto.getContent());
+            post.setCreatorName(postDto.getCreatorName());
+            post.setCreatorEmail(postDto.getCreatorEmail());
+            post.setCreatedDate(LocalDateTime.now().toString());
+            post.setUpdatedDate(LocalDateTime.now().toString());
+
+            // Default values for like and dislike counts
+            post.setLikeCount(0);
+            post.setDislikeCount(0);
+
+            // Use low-level client to insert the post into Elasticsearch
+            RestClient lowLevelClient = client.getLowLevelClient();
+            String jsonString = "{\"postId\": \"" + post.getPostId() + "\", " +
+                    "\"content\": \"" + post.getContent() + "\", " +
+                    "\"creatorName\": \"" + post.getCreatorName() + "\", " +
+                    "\"creatorEmail\": \"" + post.getCreatorEmail() + "\", " +
+                    "\"createdDate\": \"" + post.getCreatedDate() + "\", " +
+                    "\"updatedDate\": \"" + post.getUpdatedDate() + "\", " +
+                    "\"likeCount\": " + post.getLikeCount() + ", " +
+                    "\"dislikeCount\": " + post.getDislikeCount() + "}";
+
+            // Create request to insert post in Elasticsearch
+            Request lowLevelRequest = new Request("POST", "/posts/_create/" + post.getPostId());
+            lowLevelRequest.setJsonEntity(jsonString);
+
+            // Get raw response from Elasticsearch
+            Response response = lowLevelClient.performRequest(lowLevelRequest);
+            String rawBody = EntityUtils.toString(response.getEntity());
+            System.out.println("Raw response for post creation: " + rawBody);
+
+            // Update the user's published post count
+            User user = userService.findUserByEmail(post.getCreatorEmail());
+            user.setPublishedPostCount(Optional.ofNullable(user.getPublishedPostCount()).orElse(0L) + 1);
+            userService.updateUserInfo(user.getId(), Helper.userEntityToDto(user));
+
+            // Send the updated published post count to the user
+            simpMessagingTemplate.convertAndSendToUser(
+                    user.getId().toString(),
+                    "/post-count/queue",
+                    user.getPublishedPostCount()
+            );
+
+            // Call findTrendingPost method after creation
+            findTrendingPost();
+
+            // Return the post object, which was just saved to Elasticsearch
+            return post;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to create post: " + postDto.getPostId(), e);
+        }
     }
 
+
     public List<Post> getAllPosts() {
-        Iterable<Post> iterable = postRepo.findAll();
-        return StreamSupport.stream(iterable.spliterator(), false)
-                .sorted((a, b) -> b.getCreatedDate().compareTo(a.getCreatedDate()))  // sorted in descending order
+        return StreamSupport.stream(postRepo.findAll().spliterator(), false)
+                .sorted((a, b) -> b.getCreatedDate().compareTo(a.getCreatedDate()))
                 .collect(Collectors.toList());
     }
 
@@ -69,15 +129,11 @@ public class PostService {
     }
 
     public List<Post> getPostsByUserName(String userName) {
-        return postRepo.findPostByCreatorName(userName)
-                .map(List::of)
-                .orElseGet(List::of);
+        return postRepo.findPostByCreatorName(userName).map(List::of).orElseGet(List::of);
     }
 
     public List<Post> getPostsByUserEmail(String userEmail) {
-        return postRepo.findPostByCreatorEmail(userEmail)
-                .map(List::of)
-                .orElseGet(List::of);
+        return postRepo.findPostByCreatorEmail(userEmail).map(List::of).orElseGet(List::of);
     }
 
     public Post updatePost(String id, PostDto postDto) {
@@ -94,162 +150,142 @@ public class PostService {
     }
 
     public Post updatePostLikeDislikeCount(String postId, int count, boolean isLike) {
-        Post post = postRepo.findById(postId).orElse(null);
-        if (post != null) {
-            if (isLike) {
-                post.setLikeCount(count);
-            } else {
-                post.setDislikeCount(count);
+        try {
+            RestClient lowLevelClient = client.getLowLevelClient();
+            String jsonString = "{\"doc\": {\"" + (isLike ? "likeCount" : "dislikeCount") + "\": " + count + "}}";
+            Request lowLevelRequest = new Request("POST", "/posts/_update/" + postId);
+            lowLevelRequest.setJsonEntity(jsonString);
+            Response response = lowLevelClient.performRequest(lowLevelRequest);
+            String rawBody = EntityUtils.toString(response.getEntity());
+            Post updatedPost = elasticsearchOperations.get(postId, Post.class, IndexCoordinates.of("posts"));
+            try {
+                Thread.sleep(1000); // Wait for 1 second
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            postRepo.save(post);
-        }
-        findTrendingPost();
-        return post;
-    }
+            findTrendingPost();
+            if (updatedPost != null) {
+                System.out.println("Updated Post - PostId: " + updatedPost.getPostId() +
+                        " | LikeCount: " + updatedPost.getLikeCount() +
+                        " | DislikeCount: " + updatedPost.getDislikeCount());
+                return updatedPost;
+            } else {
+                Post fallbackPost = new Post();
+                fallbackPost.setPostId(postId);
+                if (isLike) fallbackPost.setLikeCount(count);
+                else fallbackPost.setDislikeCount(count);
+                return fallbackPost;
+            }
 
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update like/dislike count for post: " + postId, e);
+        }
+    }
     public void deletePost(String id) {
         postRepo.deleteById(id);
         findTrendingPost();
     }
 
     public void findTrendingPost() {
-        List<Post> posts = getMostLikesPost();
-        simpMessagingTemplate.convertAndSend("/topic/public/treding-post", posts);
+        try {
+            List<Post> posts = getMostLikedPosts();
+
+            if (posts.isEmpty()) {
+                System.out.println("No trending posts found.");
+            } else {
+                System.out.println("Found " + posts.size() + " trending posts.");
+            }
+
+            simpMessagingTemplate.convertAndSend("/topic/public/treding-post", posts);
+        } catch (Exception e) {
+            System.out.println("Error in finding trending posts: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    private List<Post> getMostLikesPost(){
-        Query matchQuery = Query.of(q-> q.matchAll(m-> m));
-        NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(matchQuery)
-                .withSort(Sort.by(Sort.Order.desc("likeCount")))
-                .withMaxResults(8)
-                .build();
-        SearchHits<Post> searchHits = elasticsearchOperations
-                              .search(
-                                        nativeQuery,
-                                        Post.class,
-                                        IndexCoordinates.of("posts")
-                              );
-        List<Post> posts = new ArrayList<>();
-        searchHits.forEach(hit-> posts.add(hit.getContent()));
-        System.out.println("Most Liked Posts: " + posts);
-        return posts;
-    }
+    private List<Post> getMostLikedPosts() {
+        // Constructing the match_all query
+        MatchAllQueryBuilder matchQuery = QueryBuilders.matchAllQuery();
+        System.out.println("Created match query: " + matchQuery);
 
-    public List<Post> filterResult(PostFilterDTO postFilterDTO) {
-        // Initialize variables
-        String creatorName = postFilterDTO.getCreatorName();
-        String content = postFilterDTO.getContent();
-
-        // Initialize likeCount variables (defaults to null if not present)
-        Integer likeCountGte = postFilterDTO.getLikeCount() != null ? postFilterDTO.getLikeCount().getGte() : null;
-        Integer likeCountLte = postFilterDTO.getLikeCount() != null ? postFilterDTO.getLikeCount().getLte() : null;
-
-        // Initialize dislikeCount variables (defaults to null if not present)
-        Integer dislikeCountGte = postFilterDTO.getDislikeCount() != null ? postFilterDTO.getDislikeCount().getGte() : null;
-        Integer dislikeCountLte = postFilterDTO.getDislikeCount() != null ? postFilterDTO.getDislikeCount().getLte() : null;
-
-
-        // Initialize createdDate variables (defaults to null if not present)
-        String createdDateGte = postFilterDTO.getCreatedDate() != null ? postFilterDTO.getCreatedDate().getGte() : null;
-        String createdDateLte = postFilterDTO.getCreatedDate() != null ? postFilterDTO.getCreatedDate().getLte() : null;
-
-
-        // Initialize updatedDate variables (defaults to null if not present)
-        String updatedDateGte = postFilterDTO.getUpdatedDate() != null ? postFilterDTO.getUpdatedDate().getGte() : null;
-        String updatedDateLte = postFilterDTO.getUpdatedDate() != null ? postFilterDTO.getUpdatedDate().getLte() : null;
-
-
-        // Print everything
-        System.out.println("Creator Name: " + creatorName);
-        System.out.println("Content: " + content);
-        System.out.println("Like Count GTE: " + likeCountGte);
-        System.out.println("Like Count LTE: " + likeCountLte);
-        System.out.println("Dislike Count GTE: " + dislikeCountGte);
-        System.out.println("Dislike Count LTE: " + dislikeCountLte);
-        System.out.println("Created Date GTE: " + createdDateGte);
-        System.out.println("Created Date LTE: " + createdDateLte);
-        System.out.println("Updated Date GTE: " + updatedDateGte);
-        System.out.println("Updated Date LTE: " + updatedDateLte);
+        // Creating the search query with sorting and pagination
+        NativeSearchQuery searchQuery = new NativeSearchQuery(matchQuery);
+        searchQuery.setPageable(PageRequest.of(0, 8)); // Limit results to 8 posts
+        searchQuery.addSort(Sort.by(Sort.Order.desc("likeCount"))); // Sort by like count
+        System.out.println("Search query with pagination and sorting: " + searchQuery);
+        SearchHits<Post> searchHits = elasticsearchOperations.search(searchQuery, Post.class, IndexCoordinates.of("posts"));
+        System.out.println("Search hits obtained: " + searchHits.getTotalHits());
 
         List<Post> posts = new ArrayList<>();
-
-        // Perform filtering logic here
-        List<Query> mustQueries = new ArrayList<>();
-
-        if(creatorName != null && !creatorName.isEmpty()) {
-            Query creatorNameQuery = Query.of(q -> q
-                    .term(t -> t.field("creatorName").value(creatorName)
-                    ));
-            mustQueries.add(creatorNameQuery);
-        }
-
-        if(content != null && !content.isEmpty()) {
-            Query contentQuery = Query.of(q -> q
-                    .match(m -> m
-                            .field("content")
-                            .query(content)
-                    )
-            );
-            mustQueries.add(contentQuery);
-        }
-
-        Query likeCountQuery = Query.of(q -> q
-                .range(r -> r.number(
-                                n -> n.field("likeCount")
-                                        .gte(likeCountGte != null ? likeCountGte.doubleValue() : null)
-                                        .lte(likeCountLte != null ? likeCountLte.doubleValue() : null)
-                        )
-                ));
-        mustQueries.add(likeCountQuery);
-
-        Query dislikeCountQuery = Query.of(q -> q
-                .range(r -> r.number(
-                                n -> n.field("dislikeCount")
-                                        .gte(dislikeCountGte != null ? dislikeCountGte.doubleValue() : null)
-                                        .lte(dislikeCountLte != null ? dislikeCountLte.doubleValue() : null)
-                        )
-                ));
-        mustQueries.add(dislikeCountQuery);
-
-        Query createdDateQuery = Query.of(q -> q
-                .range(r -> r.date(
-                                d -> d.field("createdDate")
-                                        .gte(createdDateGte != null ? createdDateGte : null)
-                                        .lte(createdDateLte != null ? createdDateLte : null)
-                        )
-                ));
-        mustQueries.add(createdDateQuery);
-
-        Query updatedDateQuery = Query.of(q -> q
-                .range(r -> r.date(
-                                d -> d.field("updatedDate")
-                                        .gte(updatedDateGte != null ? updatedDateGte : null)
-                                        .lte(updatedDateLte != null ? updatedDateLte : null)
-                        )
-                ));
-        mustQueries.add(updatedDateQuery);
-
-        Query mustQuery = Query.of(q -> q.bool(b -> b.must(mustQueries)));
-
-        NativeQuery nativeQuery = NativeQuery.builder()
-                .withQuery(mustQuery)
-                .build();
-
-        SearchHits<Post> productHits =
-                elasticsearchOperations
-                        .search(nativeQuery,
-                                Post.class,
-                                IndexCoordinates.of("posts"));
-
-        productHits.forEach(hit -> {
+        for( SearchHit<Post> hit : searchHits) {
             Post post = hit.getContent();
-            System.out.println(post);
             posts.add(post);
-        });
-
+        }
         return posts;
+    }
 
+    public List<Post> filterResult(PostFilterDTO filter) {
+        Criteria criteria = new Criteria();
+
+        // Text filters
+        if (filter.getCreatorName() != null && !filter.getCreatorName().isEmpty()) {
+            criteria = criteria.and("creatorName").is(filter.getCreatorName());
+        }
+
+        if (filter.getContent() != null && !filter.getContent().isEmpty()) {
+            criteria = criteria.and("content").matches(filter.getContent());
+        }
+
+        // Numeric filters
+        if (filter.getLikeCount() != null) {
+            Criteria likeCriteria = new Criteria("likeCount");
+            if (filter.getLikeCount().getGte() != null) {
+                likeCriteria = likeCriteria.greaterThanEqual(filter.getLikeCount().getGte());
+            }
+            if (filter.getLikeCount().getLte() != null) {
+                likeCriteria = likeCriteria.lessThanEqual(filter.getLikeCount().getLte());
+            }
+            criteria = criteria.and(likeCriteria);
+        }
+
+        if (filter.getDislikeCount() != null) {
+            Criteria dislikeCriteria = new Criteria("dislikeCount");
+            if (filter.getDislikeCount().getGte() != null) {
+                dislikeCriteria = dislikeCriteria.greaterThanEqual(filter.getDislikeCount().getGte());
+            }
+            if (filter.getDislikeCount().getLte() != null) {
+                dislikeCriteria = dislikeCriteria.lessThanEqual(filter.getDislikeCount().getLte());
+            }
+            criteria = criteria.and(dislikeCriteria);
+        }
+
+        // Date filters
+        if (filter.getCreatedDate() != null) {
+            Criteria createdDate = new Criteria("createdDate");
+            if (filter.getCreatedDate().getGte() != null) {
+                createdDate = createdDate.greaterThanEqual(filter.getCreatedDate().getGte());
+            }
+            if (filter.getCreatedDate().getLte() != null) {
+                createdDate = createdDate.lessThanEqual(filter.getCreatedDate().getLte());
+            }
+            criteria = criteria.and(createdDate);
+        }
+
+        if (filter.getUpdatedDate() != null) {
+            Criteria updatedDate = new Criteria("updatedDate");
+            if (filter.getUpdatedDate().getGte() != null) {
+                updatedDate = updatedDate.greaterThanEqual(filter.getUpdatedDate().getGte());
+            }
+            if (filter.getUpdatedDate().getLte() != null) {
+                updatedDate = updatedDate.lessThanEqual(filter.getUpdatedDate().getLte());
+            }
+            criteria = criteria.and(updatedDate);
+        }
+
+        CriteriaQuery query = new CriteriaQuery(criteria);
+        SearchHits<Post> hits = elasticsearchOperations.search(query, Post.class, IndexCoordinates.of("posts")); // ✅ Correct usage
+        return hits.stream().map(SearchHit::getContent).collect(Collectors.toList());
     }
 
 }
