@@ -8,6 +8,10 @@ import com.hasebul.quickChat.model.Post;
 import com.hasebul.quickChat.model.User;
 import com.hasebul.quickChat.repository.PostRepo;
 import com.hasebul.quickChat.utils.Helper;
+import org.apache.http.util.EntityUtils;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.client.*;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +42,16 @@ import java.util.stream.StreamSupport;
 @Transactional
 public class PostService {
 
-    @Autowired private PostRepo postRepo;
-    @Autowired private SimpMessagingTemplate simpMessagingTemplate;
-    @Autowired private UserService userService;
+    @Autowired
+    private PostRepo postRepo;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RestHighLevelClient client;
+
     private final ElasticsearchOperations elasticsearchOperations;
 
     public PostService(ElasticsearchOperations elasticsearchOperations) {
@@ -48,25 +59,64 @@ public class PostService {
     }
 
     public Post createPost(PostDto postDto) throws IOException {
-        Post post = Helper.PostEntityToDto(postDto);
-        post.setCreatedDate(LocalDateTime.now().toString());
-        post.setUpdatedDate(LocalDateTime.now().toString());
+        try {
+            // Convert the PostDto to Post entity
+            Post post = new Post();
+            post.setPostId(UUID.randomUUID().toString()); // Assuming postId is passed from the DTO
+            post.setContent(postDto.getContent());
+            post.setCreatorName(postDto.getCreatorName());
+            post.setCreatorEmail(postDto.getCreatorEmail());
+            post.setCreatedDate(LocalDateTime.now().toString());
+            post.setUpdatedDate(LocalDateTime.now().toString());
 
-        Post savedPost = postRepo.save(post);
-        findTrendingPost();
+            // Default values for like and dislike counts
+            post.setLikeCount(0);
+            post.setDislikeCount(0);
 
-        User user = userService.findUserByEmail(savedPost.getCreatorEmail());
-        user.setPublishedPostCount(Optional.ofNullable(user.getPublishedPostCount()).orElse(0L) + 1);
-        userService.updateUserInfo(user.getId(), Helper.userEntityToDto(user));
+            // Use low-level client to insert the post into Elasticsearch
+            RestClient lowLevelClient = client.getLowLevelClient();
+            String jsonString = "{\"postId\": \"" + post.getPostId() + "\", " +
+                    "\"content\": \"" + post.getContent() + "\", " +
+                    "\"creatorName\": \"" + post.getCreatorName() + "\", " +
+                    "\"creatorEmail\": \"" + post.getCreatorEmail() + "\", " +
+                    "\"createdDate\": \"" + post.getCreatedDate() + "\", " +
+                    "\"updatedDate\": \"" + post.getUpdatedDate() + "\", " +
+                    "\"likeCount\": " + post.getLikeCount() + ", " +
+                    "\"dislikeCount\": " + post.getDislikeCount() + "}";
 
-        simpMessagingTemplate.convertAndSendToUser(
-                user.getId().toString(),
-                "/post-count/queue",
-                user.getPublishedPostCount()
-        );
+            // Create request to insert post in Elasticsearch
+            Request lowLevelRequest = new Request("POST", "/posts/_create/" + post.getPostId());
+            lowLevelRequest.setJsonEntity(jsonString);
 
-        return savedPost;
+            // Get raw response from Elasticsearch
+            Response response = lowLevelClient.performRequest(lowLevelRequest);
+            String rawBody = EntityUtils.toString(response.getEntity());
+            System.out.println("Raw response for post creation: " + rawBody);
+
+            // Update the user's published post count
+            User user = userService.findUserByEmail(post.getCreatorEmail());
+            user.setPublishedPostCount(Optional.ofNullable(user.getPublishedPostCount()).orElse(0L) + 1);
+            userService.updateUserInfo(user.getId(), Helper.userEntityToDto(user));
+
+            // Send the updated published post count to the user
+            simpMessagingTemplate.convertAndSendToUser(
+                    user.getId().toString(),
+                    "/post-count/queue",
+                    user.getPublishedPostCount()
+            );
+
+            // Call findTrendingPost method after creation
+            findTrendingPost();
+
+            // Return the post object, which was just saved to Elasticsearch
+            return post;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to create post: " + postDto.getPostId(), e);
+        }
     }
+
 
     public List<Post> getAllPosts() {
         return StreamSupport.stream(postRepo.findAll().spliterator(), false)
@@ -99,36 +149,39 @@ public class PostService {
         return null;
     }
 
-    public Post updatePostLikeDislikeCount(String postId, int count, boolean isLike) throws Exception {
-        Map<String, Object> updateFields = new HashMap<>();
-        if (isLike) {
-            updateFields.put("likeCount", count);
-        } else {
-            updateFields.put("dislikeCount", count);
-        }
-
-        // Prepare partial update
-        UpdateQuery updateQuery = UpdateQuery.builder(postId)
-                .withDocument(Document.from(updateFields))
-                .build();
-
+    public Post updatePostLikeDislikeCount(String postId, int count, boolean isLike) {
         try {
-            elasticsearchOperations.update(updateQuery, IndexCoordinates.of("posts"));
-            System.out.println("Successfully updated like/dislike count for postId: " + postId);
+            RestClient lowLevelClient = client.getLowLevelClient();
+            String jsonString = "{\"doc\": {\"" + (isLike ? "likeCount" : "dislikeCount") + "\": " + count + "}}";
+            Request lowLevelRequest = new Request("POST", "/posts/_update/" + postId);
+            lowLevelRequest.setJsonEntity(jsonString);
+            Response response = lowLevelClient.performRequest(lowLevelRequest);
+            String rawBody = EntityUtils.toString(response.getEntity());
+            Post updatedPost = elasticsearchOperations.get(postId, Post.class, IndexCoordinates.of("posts"));
+            try {
+                Thread.sleep(1000); // Wait for 1 second
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            findTrendingPost();
+            if (updatedPost != null) {
+                System.out.println("Updated Post - PostId: " + updatedPost.getPostId() +
+                        " | LikeCount: " + updatedPost.getLikeCount() +
+                        " | DislikeCount: " + updatedPost.getDislikeCount());
+                return updatedPost;
+            } else {
+                Post fallbackPost = new Post();
+                fallbackPost.setPostId(postId);
+                if (isLike) fallbackPost.setLikeCount(count);
+                else fallbackPost.setDislikeCount(count);
+                return fallbackPost;
+            }
 
-            //findTrendingPost(); // You can keep or remove this based on your design
-
-            // Return the updated count only
-            Post updated = new Post();
-            updated.setPostId(postId);
-            if (isLike) updated.setLikeCount(count);
-            else updated.setDislikeCount(count);
-            return updated;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update post like/dislike count", e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update like/dislike count for post: " + postId, e);
         }
     }
-
     public void deletePost(String id) {
         postRepo.deleteById(id);
         findTrendingPost();
@@ -144,11 +197,9 @@ public class PostService {
                 System.out.println("Found " + posts.size() + " trending posts.");
             }
 
-            // Send the trending posts to the WebSocket channel
             simpMessagingTemplate.convertAndSend("/topic/public/treding-post", posts);
         } catch (Exception e) {
             System.out.println("Error in finding trending posts: " + e.getMessage());
-            // Optionally log more details about the exception, including stack trace if needed
             e.printStackTrace();
         }
     }
@@ -163,19 +214,14 @@ public class PostService {
         searchQuery.setPageable(PageRequest.of(0, 8)); // Limit results to 8 posts
         searchQuery.addSort(Sort.by(Sort.Order.desc("likeCount"))); // Sort by like count
         System.out.println("Search query with pagination and sorting: " + searchQuery);
-
-        // Perform the search operation
         SearchHits<Post> searchHits = elasticsearchOperations.search(searchQuery, Post.class, IndexCoordinates.of("posts"));
         System.out.println("Search hits obtained: " + searchHits.getTotalHits());
 
-        // Collect the results
         List<Post> posts = new ArrayList<>();
-        searchHits.forEach(hit -> {
-            System.out.println("Adding post: " + hit.getContent().getPostId() + " with like count: " + hit.getContent().getLikeCount());
-            posts.add(hit.getContent());
-        });
-
-        System.out.println("Total posts fetched: " + posts.size());
+        for( SearchHit<Post> hit : searchHits) {
+            Post post = hit.getContent();
+            posts.add(post);
+        }
         return posts;
     }
 

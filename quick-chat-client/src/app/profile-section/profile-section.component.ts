@@ -13,8 +13,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { TrendingPostComponent } from '../trending-post/trending-post.component';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 
@@ -35,10 +33,7 @@ import { Stomp } from '@stomp/stompjs';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    MatSnackBarModule,
-    NavbarComponent,
-    TrendingPostComponent,
-    ProfileSectionComponent
+    MatSnackBarModule
   ],
   templateUrl: './profile-section.component.html',
   styleUrl: './profile-section.component.scss'
