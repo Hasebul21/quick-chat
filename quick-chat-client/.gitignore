@@ -32,4 +32,5 @@ logs/
 
 # Environment files (Keep `.example.env` for reference)
 *.env
-src/environments/environment*.ts
+# environment.prod.ts is generated at build time by scripts/write-env.cjs
+src/environments/environment.prod.ts
