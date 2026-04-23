@@ -1,0 +1,11 @@
+{
+    "buildCommand": "cd quick-chat-client && npm install && npm run build:vercel",
+    "outputDirectory": "quick-chat-client/dist/quick-chat/browser",
+    "framework": null,
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}

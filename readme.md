@@ -1,6 +1,6 @@
 # QuickChat
 
-QuickChat is a real-time chat application built with a modern tech stack including Spring Boot, Angular, PostgreSQL, Redis, Elasticsearch, and Docker. It offers features like user authentication, bidirectional communication, and optimized performance with in-memory caching and fast search capabilities.
+A real-time chat and social platform built with Spring Boot, Angular, PostgreSQL, Redis, and Elasticsearch. Features WebSocket-based messaging, user authentication, post feed with search, and full cloud deployment on Railway + Vercel.
 
 ## Features
 
