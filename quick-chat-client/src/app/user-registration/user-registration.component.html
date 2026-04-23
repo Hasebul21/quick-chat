@@ -1,11 +1,22 @@
 <body>
   <div class="container">
     <div class="register-box">
-      <h2>Register</h2>
+
+      <!-- App Branding -->
+      <div class="app-brand">
+        <div class="brand-logo">💬</div>
+        <h1 class="brand-name">QuickChat</h1>
+        <p class="brand-tagline">Connect. Chat. Collaborate.</p>
+      </div>
+
+      <h2>Create an Account</h2>
+      <p class="sub">Join the conversation today</p>
+
       <form>
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" [(ngModel)]="username" required placeholder="Enter your username">
+          <input type="text" id="username" name="username" [(ngModel)]="username" required
+            placeholder="Enter your username">
         </div>
 
         <div class="form-group">
@@ -15,15 +26,20 @@
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" [(ngModel)]="password" required placeholder="Enter your password">
+          <input type="password" id="password" name="password" [(ngModel)]="password" required
+            placeholder="Enter your password">
         </div>
 
         <div class="form-group">
           <label for="confirm-password">Confirm Password</label>
-          <input type="password" id="confirm-password" name="confirm-password" [(ngModel)]="confirmPassword" required placeholder="Confirm your password">
+          <input type="password" id="confirm-password" name="confirm-password" [(ngModel)]="confirmPassword" required
+            placeholder="Confirm your password">
         </div>
 
-        <button type="submit" class="btn" [disabled]="disableSubmitButton()" (click)="persistUser()">Register</button>
+        <button type="submit" class="btn" [disabled]="disableSubmitButton()" (click)="persistUser()">Create
+          Account</button>
+
+        <p class="login-link">Already have an account? <a [routerLink]="'/login'">Sign in</a></p>
       </form>
     </div>
   </div>

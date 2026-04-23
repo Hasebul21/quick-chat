@@ -1,130 +1,165 @@
-.users-container {
-  padding: 1rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  height: 80%;
-  overflow-y: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+.contacts-panel {
+  height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.chat-search-box {
-  margin-bottom: 1rem;
-}
-
-.search-input-group {
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  background: #fff;
+  border-radius: 16px;
   overflow: hidden;
 }
 
-.search-input-group input {
+/* Header */
+.panel-header {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+
+  .my-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .my-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e8e8ff;
+    flex-shrink: 0;
+  }
+
+  .my-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .my-status {
+    font-size: 0.72rem;
+    color: #4caf50;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: #4caf50;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  }
+}
+
+/* Search */
+.search-wrap {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+
+  .search-input {
+    width: 100%;
+    border: 1.5px solid #eee;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: #fafafa;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #6c63ff;
+      background: #fff;
+    }
+  }
+}
+
+/* Contact list */
+.contacts-list {
   flex: 1;
-  padding: 0.5rem 0.75rem;
-  border: none;
-  outline: none;
-  font-size: 0.95rem;
+  overflow-y: auto;
+  padding: 8px 0;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
 }
 
-.btn-search {
-  background-color: #1976d2;
-  border: none;
-  padding: 0.5rem 0.75rem;
-  color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-search:hover {
-  background-color: #125aa1;
-}
-
-.users-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.user-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.user-item:hover {
-  background-color: #f0f4f8;
-}
-
-.user-item.current-user {
-  background-color: #e3f2fd;
-}
-
-.user-avatar {
-  position: relative;
-  margin-right: 10px;
-}
-
-.user-avatar img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.status.online {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 10px;
-  height: 10px;
-  background-color: #4caf50;
-  border: 2px solid #fff;
-  border-radius: 50%;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.name {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.time {
-  font-size: 0.75rem;
-  color: #999;
-}
-
-.welcome-container {
+.contact-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  margin: 20px auto;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #f8f8ff;
+  }
+
+  &.active {
+    background: #f0efff;
+  }
 }
 
-.user-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #4a90e2;
+.contact-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+
+  .contact-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .status-dot {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+
+    &.online {
+      background: #4caf50;
+    }
+  }
 }
 
-.welcome-message {
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
-  margin: 0;
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  .contact-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .contact-sub {
+    font-size: 0.75rem;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.no-contacts {
+  padding: 20px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #bbb;
 }

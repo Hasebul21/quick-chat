@@ -20,6 +20,7 @@ import { TrendingPostComponent } from "../trending-post/trending-post.component"
 import { StompService } from '../service/stomp.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProfileSectionComponent } from "../profile-section/profile-section.component";
+import { DEFAULT_USERS } from '../mock-data';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +43,7 @@ import { ProfileSectionComponent } from "../profile-section/profile-section.comp
     NavbarComponent,
     TrendingPostComponent,
     ProfileSectionComponent
-],
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -50,37 +51,43 @@ export class HomeComponent implements OnInit, AfterViewInit {
   loggedInUser: any = null;
   newPostContent: string = '';
 
+  suggestedUsers = DEFAULT_USERS.map(u => ({
+    name: u.userName,
+    title: u.professionalTitle,
+    avatar: u.profileImage,
+  }));
+
   constructor(private authService: AuthService,
-              private postService: PostService,
-               private toastr: ToastrService
-            ) { }
+    private postService: PostService,
+    private toastr: ToastrService
+  ) { }
   ngAfterViewInit(): void {
     //this.postService.getMostLikedPost().subscribe();
   }
-              
+
 
   ngOnInit(): void {
     this.loggedInUser = this.authService.getLoggedInUser();
   }
 
   postPublicly() {
-      const newPost = {
-        creatorName : this.loggedInUser.userName,
-        creatorEmail : this.loggedInUser.userEmail,
-        creatorImage : this.loggedInUser.profileImage,
-        content :this.newPostContent.trim(),
-        likeCount : 0,
-        dislikeCount : 0,
-      };
-      this.newPostContent = '';
-      this.postService.persistPost(newPost).subscribe(
-        response => {
-          this.toastr.success('User logged in successfully!', 'Success');
-        },
-        error => {
-          this.toastr.success('User logged in successfully!', 'Success');
-        }
-      );
+    const newPost = {
+      creatorName: this.loggedInUser.userName,
+      creatorEmail: this.loggedInUser.userEmail,
+      creatorImage: this.loggedInUser.profileImage,
+      content: this.newPostContent.trim(),
+      likeCount: 0,
+      dislikeCount: 0,
+    };
+    this.newPostContent = '';
+    this.postService.persistPost(newPost).subscribe(
+      response => {
+        this.toastr.success('User logged in successfully!', 'Success');
+      },
+      error => {
+        this.toastr.success('User logged in successfully!', 'Success');
+      }
+    );
   }
 
 }

@@ -1,6 +1,14 @@
 <body>
   <div class="login-container">
     <form class="login-form" autocomplete="off">
+
+      <!-- App Branding -->
+      <div class="app-brand">
+        <div class="brand-logo">💬</div>
+        <h1 class="brand-name">QuickChat</h1>
+        <p class="brand-tagline">Connect. Chat. Collaborate.</p>
+      </div>
+
       <h2>Welcome Back</h2>
       <p>Please log in to continue</p>
 
@@ -16,7 +24,7 @@
 
       <button type="submit" (click)="login()">Log In</button>
 
-      <p class="register-link">New to our site? <a [routerLink]="'/register'">Register here</a></p>
+      <p class="register-link">New to QuickChat? <a [routerLink]="'/register'">Create an account</a></p>
     </form>
   </div>
 </body>

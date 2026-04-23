@@ -12,12 +12,13 @@ import { sockJsUrl } from '../ws.util';
 import { StompService } from '../service/stomp.service';
 import { AuthService } from '../service/auth-service';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { MatIconModule } from '@angular/material/icon';
 import { DEFAULT_USERS } from '../mock-data';
 
 @Component({
   selector: 'app-chat-room',
   standalone: true,
-  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, RouterModule, NavbarComponent],
+  imports: [UserStatusComponent, ChatBoxComponent, FormsModule, CommonModule, RouterModule, NavbarComponent, MatIconModule],
   templateUrl: './chat-room.component.html',
   styleUrl: './chat-room.component.scss'
 })

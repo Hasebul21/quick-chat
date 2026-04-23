@@ -2,69 +2,145 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f7fa;
-  height: 90vh;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a35 50%, #0f0f23 100%);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .login-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.login-form {
   background: #fff;
-  padding: 40px 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  padding: 40px 36px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
+/* ---- App Branding ---- */
+.app-brand {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f0f0f0;
+
+  .brand-logo {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 8px rgba(108, 99, 255, 0.4));
+  }
+
+  .brand-name {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin: 0 0 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  .brand-tagline {
+    font-size: 0.82rem;
+    color: #aaa;
+    margin: 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+}
+
+/* ---- Form headings ---- */
 .login-form h2 {
-  margin-bottom: 10px;
-  font-size: 24px;
-  color: #333;
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+  font-weight: 700;
 }
 
-.login-form p {
-  margin-bottom: 20px;
-  color: #777;
+.login-form>p {
+  margin: 0 0 24px;
+  color: #888;
+  font-size: 0.9rem;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    background: #fafafa;
+    box-sizing: border-box;
+    transition: border-color 0.2s, background 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #6c63ff;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+    }
+  }
 }
 
-.form-group label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: #555;
-}
-
-.form-group input {
+button[type="submit"] {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #007bff;
+  padding: 13px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: #fff;
-  font-size: 15px;
+  font-size: 1rem;
+  font-weight: 700;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.3s ease;
-}
+  margin-top: 6px;
+  transition: opacity 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
 
-button:hover {
-  background-color: #0056b3;
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .register-link {
   margin-top: 20px;
   text-align: center;
-  font-size: 0.95em;
+  font-size: 0.88rem;
+  color: #888;
+
+  a {
+    color: #6c63ff;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

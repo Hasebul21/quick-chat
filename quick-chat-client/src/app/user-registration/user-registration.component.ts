@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../service/auth-service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-registration',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './user-registration.component.html',
   styleUrl: './user-registration.component.scss'
 })
@@ -16,12 +17,12 @@ export class UserRegistrationComponent {
   password: string;
   confirmPassword: string;
 
-  constructor(private authService : AuthService,
-     private router: Router,
-     private toastr: ToastrService){
-     }
+  constructor(private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService) {
+  }
 
-  persistUser(){
+  persistUser() {
     this.authService.persisUser({
       userName: this.username,
       userEmail: this.useremail,

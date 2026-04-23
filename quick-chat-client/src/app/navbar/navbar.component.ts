@@ -5,19 +5,23 @@ import { AuthService } from '../service/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatToolbarModule, FormsModule, CommonModule, RouterModule],
+  imports: [MatToolbarModule, MatIconModule, MatMenuModule, MatButtonModule, MatDividerModule, FormsModule, CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-   
   loggedInUser: any = null;
+  mobileMenuOpen = false;
   constructor(private auth: AuthService,
     private toastr: ToastrService,
-    private router : Router
+    private router: Router
   ) {
 
   }

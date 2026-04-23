@@ -1,35 +1,38 @@
-<div class="users-container">
-  <div class="welcome-container">
-    <img class="user-avatar"
-      [src]="loginUser?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + loginUser?.userName"
-      (error)="onImgError($event)" alt="User avatar" />
-    <p class="welcome-message">Hi {{ loginUser.userName }}, welcome to QuickChat!</p>
-  </div>
-  <!-- Search Box -->
-  <div class="chat-search-box">
-    <div class="search-input-group">
-      <input class="form-control" placeholder="Search" />
-      <button type="button" class="btn-search">
-        <i class="fa fa-search"></i>
-      </button>
+<div class="contacts-panel">
+  <!-- Header -->
+  <div class="panel-header">
+    <div class="my-info">
+      <img class="my-avatar"
+        [src]="loginUser?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + loginUser?.userName"
+        (error)="onImgError($event)" alt="me" />
+      <div>
+        <div class="my-name">{{ loginUser?.userName }}</div>
+        <div class="my-status"><span class="dot"></span> Online</div>
+      </div>
     </div>
   </div>
 
-  <!-- User List -->
-  <ul class="users-list">
-    <ng-container *ngFor="let activeUser of activeUsers">
-      <ng-container *ngIf="activeUser.userEmail !== loginUser.userEmail">
-        <li class="user-item" (click)="selectUser(activeUser)">
-          <div class="user-avatar">
-            <img [src]="getProfileImageSrc(activeUser)" (error)="onImgError($event)" alt="User avatar" />
-            <span class="status online"></span>
-          </div>
-          <div class="user-details">
-            <span class="name">{{ activeUser.userName }}</span>
-            <span class="time">15/02/2019</span>
-          </div>
-        </li>
-      </ng-container>
-    </ng-container>
-  </ul>
+  <!-- Search -->
+  <div class="search-wrap">
+    <input class="search-input" placeholder="Search contacts..." [(ngModel)]="searchTerm" />
+  </div>
+
+  <!-- Contact List -->
+  <div class="contacts-list">
+    <div class="contact-item" *ngFor="let activeUser of filteredUsers" (click)="selectUser(activeUser)"
+      [class.active]="activeUser === selectedUser">
+      <div class="contact-avatar-wrap">
+        <img [src]="getProfileImageSrc(activeUser)" (error)="onImgError($event)" class="contact-avatar" alt="avatar" />
+        <span class="status-dot online"></span>
+      </div>
+      <div class="contact-details">
+        <span class="contact-name">{{ activeUser.userName }}</span>
+        <span class="contact-sub">{{ activeUser.professionalTitle || 'Member' }}</span>
+      </div>
+    </div>
+
+    <div class="no-contacts" *ngIf="filteredUsers.length === 0">
+      No contacts found
+    </div>
+  </div>
 </div>

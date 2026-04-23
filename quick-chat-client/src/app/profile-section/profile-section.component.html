@@ -1,29 +1,51 @@
-<aside class="profile-section">
-    <mat-card class="profile-card">
-      <div class="profile-header">
-        <img class="profile-image" [src]="loggedInUser?.profileImage || 'https://robohash.org/robot'"
-          alt="User Photo" />
-
-        <div class="header-info">
-          <h2 class="username">{{loggedInUser.userName}}</h2>
-          <p class="role">{{loggedInUser.professionalTitle}}</p>
-        </div>
-      </div>
-      <mat-divider></mat-divider>
-      <div class="profile-details">
-        <p><strong>Email :</strong> {{loggedInUser.userEmail}}</p>
-        <p><strong>Location :</strong> {{loggedInUser.location}}</p>
-        <p><strong>Joined :</strong> {{loggedInUser.joinDate}}</p>
-        <p><strong>Followers :</strong> 0</p>
-        <p><strong>Following :</strong> 0</p>
-        <p><strong>Published Post :</strong> {{trendingPostsCount}}</p>
-        <p><strong>Bio :</strong> {{loggedInUser.bio}}</p>
-        <p><strong>Portfolio :</strong> <a href="https://johnsportfolio.com"
-            target="_blank">{{loggedInUser.portfolio}}</a></p>
-        <p><strong>Skills :</strong> {{loggedInUser.skills}}</p>
-        <p><strong>Hobbies :</strong>{{loggedInUser.hobbies}}</p>
-        <p><strong>Instagram :</strong> <a href="https://github.com/johndoe"
-            target="_blank">{{loggedInUser.instagram}}</a></p>
-      </div>
-    </mat-card>
-  </aside>
+<aside class="profile-sidebar">
+  <div class="avatar-wrap">
+    <img class="sidebar-avatar"
+      [src]="loggedInUser?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + loggedInUser?.userName"
+      (error)="$any($event.target).src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'" alt="Profile" />
+  </div>
+  <div class="sidebar-identity">
+    <h3 class="sidebar-name">{{ loggedInUser?.userName }}</h3>
+    <p class="sidebar-title">{{ loggedInUser?.professionalTitle || 'QuickChat Member' }}</p>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="stats-row">
+    <div class="stat">
+      <span class="stat-value">{{ trendingPostsCount || 0 }}</span>
+      <span class="stat-label">Posts</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">0</span>
+      <span class="stat-label">Followers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">0</span>
+      <span class="stat-label">Following</span>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="sidebar-details">
+    <div class="detail-row" *ngIf="loggedInUser?.location">
+      <mat-icon>location_on</mat-icon>
+      <span>{{ loggedInUser?.location }}</span>
+    </div>
+    <div class="detail-row" *ngIf="loggedInUser?.userEmail">
+      <mat-icon>email</mat-icon>
+      <span>{{ loggedInUser?.userEmail }}</span>
+    </div>
+    <div class="detail-row" *ngIf="loggedInUser?.skills">
+      <mat-icon>code</mat-icon>
+      <span>{{ loggedInUser?.skills }}</span>
+    </div>
+    <div class="detail-row" *ngIf="loggedInUser?.portfolio">
+      <mat-icon>link</mat-icon>
+      <a [href]="loggedInUser?.portfolio" target="_blank" rel="noopener">Portfolio</a>
+    </div>
+    <div class="detail-row" *ngIf="loggedInUser?.bio">
+      <mat-icon>info_outline</mat-icon>
+      <span>{{ loggedInUser?.bio }}</span>
+    </div>
+  </div>
+</aside>

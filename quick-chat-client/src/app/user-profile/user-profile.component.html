@@ -1,48 +1,88 @@
 <app-navbar></app-navbar>
-<body>
-    <div class="form-container">
-        <h2>Hi {{loggedInUser.userName}}, let's update your profile</h2>
-        <form (ngSubmit)="updateProfile()" #updateProfileForm="ngForm">
-            
-            <label for="profile">Upload Profile Picture</label>
-            <input type="file" id="profile" name="profile" (change)="onFileSelected($event)" required>
+<div class="profile-page">
+    <div class="profile-card">
+        <!-- Header banner -->
+        <div class="profile-banner">
+            <div class="banner-content">
+                <img class="profile-avatar"
+                    [src]="loggedInUser?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + loggedInUser?.userName"
+                    (error)="$any($event.target).src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'"
+                    alt="Profile" />
+                <div class="profile-identity">
+                    <h2 class="profile-name">{{ loggedInUser?.userName }}</h2>
+                    <p class="profile-title">{{ loggedInUser?.professionalTitle || 'QuickChat Member' }}</p>
+                    <p class="profile-location" *ngIf="loggedInUser?.location">
+                        <mat-icon>location_on</mat-icon> {{ loggedInUser?.location }}
+                    </p>
+                </div>
+            </div>
+        </div>
 
-            <label for="title">Professional Title</label>
-            <input type="text" id="title" name="title" [(ngModel)]="title" placeholder="Software Developer">
-          
-            <label for="location">Location</label>
-            <input type="text" id="location" name="location" [(ngModel)]="location" placeholder="New York, USA">
-          
-            <label for="portfolio">Portfolio</label>
-            <input type="text" id="portfolio" name="portfolio" [(ngModel)]="portfolio" placeholder="https://www.johnsmith.dev" required>
-          
-            <label for="instagram">Instagram handle</label>
-            <input type="text" id="instagram" name="instagram" [(ngModel)]="instagram" placeholder="@johnsmith.codes" required>
-          
-            <label for="bio">Bio</label>
-            <textarea id="bio"
-             name="bio" 
-             maxlength="300"
-            [(ngModel)]="bio" 
-            placeholder="Passionate about building scalable web apps..." required></textarea>
-          
-            <label for="skills">Skills</label>
-            <input type="text" 
-            id="skills" 
-            name="skills" 
-            maxlength="100"
-            [(ngModel)]="skills" 
-            placeholder="JavaScript, Angular, Node.js" required>
-          
-            <label for="hobbies">Hobbies</label>
-            <input type="text" 
-            id="hobbies" 
-            maxlength="100"
-            name="hobbies" 
-            [(ngModel)]="hobbies" 
-            placeholder="Traveling, Photography, Open Source Contributions" required>
-          
-            <button type="submit">Update Profile</button>
-          </form>
+        <!-- Edit form -->
+        <div class="edit-section">
+            <h3 class="section-title">Edit Profile</h3>
+            <form (ngSubmit)="updateProfile()" #updateProfileForm="ngForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Profile Picture</label>
+                        <div class="file-input-wrap">
+                            <input type="file" id="profile" name="profile" (change)="onFileSelected($event)"
+                                accept="image/*" />
+                            <label for="profile" class="file-label">
+                                <mat-icon>upload</mat-icon>
+                                {{ profileImage ? 'Image selected' : 'Choose image' }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Professional Title</label>
+                        <input type="text" id="title" name="title" [(ngModel)]="title"
+                            [placeholder]="loggedInUser?.professionalTitle || 'e.g. Software Developer'" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" [(ngModel)]="location"
+                            [placeholder]="loggedInUser?.location || 'e.g. New York, USA'" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="portfolio">Portfolio URL</label>
+                        <input type="text" id="portfolio" name="portfolio" [(ngModel)]="portfolio"
+                            [placeholder]="loggedInUser?.portfolio || 'https://yoursite.dev'" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="instagram">Instagram Handle</label>
+                        <input type="text" id="instagram" name="instagram" [(ngModel)]="instagram"
+                            [placeholder]="loggedInUser?.instagram || '@yourhandle'" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skills">Skills</label>
+                        <input type="text" id="skills" name="skills" maxlength="100" [(ngModel)]="skills"
+                            [placeholder]="loggedInUser?.skills || 'JavaScript, Angular, Node.js'" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hobbies">Hobbies</label>
+                        <input type="text" id="hobbies" name="hobbies" maxlength="100" [(ngModel)]="hobbies"
+                            [placeholder]="loggedInUser?.hobbies || 'Traveling, Photography'" />
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" maxlength="300" [(ngModel)]="bio"
+                            [placeholder]="loggedInUser?.bio || 'Tell us about yourself...'" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" routerLink="/home">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </div>
     </div>
-</body>
+</div>

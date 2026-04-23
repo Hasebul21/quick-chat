@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../service/auth-service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -8,7 +11,7 @@ import { NavbarComponent } from "../navbar/navbar.component";
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [FormsModule, NavbarComponent],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, NavbarComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
 })
@@ -34,7 +37,7 @@ export class UserProfileComponent {
 
   updateProfile() {
     const formData = new FormData();
-  
+
     if (this.title) formData.append('professionalTitle', this.title);
     if (this.location) formData.append('location', this.location);
     if (this.portfolio) formData.append('portfolio', this.portfolio);
@@ -42,13 +45,13 @@ export class UserProfileComponent {
     if (this.bio) formData.append('bio', this.bio);
     if (this.skills) formData.append('skills', this.skills);
     if (this.hobbies) formData.append('hobbies', this.hobbies);
-  
+
     if (this.profileImage) {
       formData.append('profileImage', this.profileImage);
     }
     for (let [key, val] of formData.entries()) {
     }
-  
+
     this.authService.updateUserProfile(this.loggedInUser.id, formData).subscribe({
       next: (response) => {
         response.profileImage = `data:image/jpeg;base64,${response.profileImage}`;
@@ -61,7 +64,7 @@ export class UserProfileComponent {
       }
     });
   }
-  
+
 
   onFileSelected(event: any) {
     this.profileImage = event.target.files[0];

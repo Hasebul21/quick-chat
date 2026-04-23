@@ -1,6 +1,6 @@
 # QuickChat
 
-A real-time chat and social platform built with Spring Boot, Angular, PostgreSQL, Redis, and Elasticsearch. Features WebSocket-based messaging, user authentication, post feed with search, and full cloud deployment on Railway + Vercel.
+A production-quality real-time chat and social platform built with Spring Boot, Angular, PostgreSQL, Redis, and Elasticsearch. Features WebSocket-based messaging, user authentication, post feed with search, and full cloud deployment on Railway + Vercel.
 
 ## Features
 

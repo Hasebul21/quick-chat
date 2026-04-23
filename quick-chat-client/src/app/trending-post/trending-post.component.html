@@ -1,30 +1,23 @@
-<p class="fancy-title trending-header" *ngIf="trendingPosts.length > 0">Trending Now</p>
-
-<div class="post-grid">
-  <mat-card *ngFor="let post of trendingPosts" class="styled-post-card small-card">
-    <mat-card-header>
-      <div class="post-header">
-        <div class="avatar-wrapper">
-          <img [src]="post.creatorImage || 'https://robohash.org/robot'" alt="Creator's Avatar"
-            class="creator-avatar-img" />
-        </div>
-        <div class="user-info">
-          <mat-card-title class="post-user">{{ post.creatorName }}</mat-card-title>
-          <mat-card-subtitle class="post-timestamp">{{ post.createdDate }}</mat-card-subtitle>
-        </div>
+<div class="posts-wrapper">
+  <div class="post-card" *ngFor="let post of trendingPosts">
+    <div class="post-header">
+      <img class="post-avatar"
+        [src]="post.creatorImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + post.creatorName"
+        (error)="$any($event.target).src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'" alt="avatar" />
+      <div class="post-meta">
+        <span class="post-author">{{ post.creatorName }}</span>
+        <span class="post-time">{{ post.createdDate | date: 'MMM d' }}</span>
       </div>
-    </mat-card-header>
-    <mat-card-content>
-      <p class="post-content">{{ post.content }}</p>
-    </mat-card-content>
-    <mat-card-actions class="post-actions">
-      <button mat-icon-button color="primary" disabled="true"><mat-icon>thumb_up</mat-icon></button>
-      <span class="action-count">{{ post.likeCount }}</span>
-      <button mat-icon-button color="warn" disabled="true"><mat-icon>thumb_down</mat-icon></button>
-      <span class="action-count">{{ post.dislikeCount }}</span>
-    </mat-card-actions>
-  </mat-card>
-  <div *ngIf="trendingPosts.length === 0" class="no-posts">
-    <p>No trending posts available.</p>
+    </div>
+    <p class="post-body">{{ post.content }}</p>
+    <div class="post-footer">
+      <span class="reaction"><mat-icon>thumb_up</mat-icon> {{ post.likeCount }}</span>
+      <span class="reaction"><mat-icon>thumb_down</mat-icon> {{ post.dislikeCount }}</span>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="trendingPosts.length === 0">
+    <mat-icon>article</mat-icon>
+    <p>No posts yet. Be the first to share something!</p>
   </div>
 </div>
