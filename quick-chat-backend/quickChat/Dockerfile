@@ -9,8 +9,8 @@ COPY src ./src
 # Build the application
 RUN mvn clean package -DskipTests
 
-# Use a lightweight JDK image for the final container
-FROM openjdk:17-jdk-alpine
+# Use a lightweight JRE image for the final container
+FROM eclipse-temurin:17-jre-alpine
 MAINTAINER quickchat.com
 
 # Install curl
