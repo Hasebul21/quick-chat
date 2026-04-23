@@ -102,20 +102,39 @@ export class PostviewComponent {
   }
 
   applyFilter(): void {
-    if (this.filter.createdDate?.gte) {
-      this.filter.createdDate.gte = new Date(this.filter.createdDate.gte).toISOString();
-    }
-    if (this.filter.createdDate?.lte) {
-      this.filter.createdDate.lte = new Date(this.filter.createdDate.lte).toISOString();
+    // Build a payload copy so we don't mutate the bound filter values
+    const filterPayload: any = {
+      creatorName: this.filter.creatorName || null,
+      content: this.filter.content || null,
+      likeCount: this.filter.likeCount,
+      dislikeCount: this.filter.dislikeCount,
+      createdDate: null,
+      updatedDate: null,
+    };
+
+    if (this.filter.createdDate?.gte || this.filter.createdDate?.lte) {
+      filterPayload.createdDate = {
+        gte: this.filter.createdDate.gte
+          ? new Date(this.filter.createdDate.gte).toISOString()
+          : null,
+        lte: this.filter.createdDate.lte
+          ? new Date(this.filter.createdDate.lte + 'T23:59:59').toISOString()
+          : null,
+      };
     }
 
-    if (this.filter.updatedDate?.gte) {
-      this.filter.updatedDate.gte = new Date(this.filter.updatedDate.gte).toISOString();
+    if (this.filter.updatedDate?.gte || this.filter.updatedDate?.lte) {
+      filterPayload.updatedDate = {
+        gte: this.filter.updatedDate.gte
+          ? new Date(this.filter.updatedDate.gte).toISOString()
+          : null,
+        lte: this.filter.updatedDate.lte
+          ? new Date(this.filter.updatedDate.lte + 'T23:59:59').toISOString()
+          : null,
+      };
     }
-    if (this.filter.updatedDate?.lte) {
-      this.filter.updatedDate.lte = new Date(this.filter.updatedDate.lte).toISOString();
-    }
-    this.postService.getPostsByFilter(this.filter).subscribe((posts) => {
+
+    this.postService.getPostsByFilter(filterPayload).subscribe((posts) => {
       this.allFilteredPosts = posts;
       this.totalPages = Math.ceil(posts.length / 8);
       this.currentPage = 1;

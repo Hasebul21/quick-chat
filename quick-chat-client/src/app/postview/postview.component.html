@@ -4,12 +4,50 @@
   <!-- Toolbar -->
   <div class="feed-toolbar">
     <h2 class="feed-title"><mat-icon>dynamic_feed</mat-icon> Community Feed</h2>
-    <div class="search-wrap">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input class="search-input" placeholder="Search by username..." [(ngModel)]="filter.creatorName"
-        (ngModelChange)="applyFilter()" />
-      <button class="clear-btn" *ngIf="filter.creatorName" (click)="resetFilter()">
-        <mat-icon>close</mat-icon>
+    <div class="toolbar-right">
+      <div class="search-wrap">
+        <mat-icon class="search-icon">person_search</mat-icon>
+        <input class="search-input" placeholder="Search by username…" [(ngModel)]="filter.creatorName"
+          (ngModelChange)="applyFilter()" />
+        <button class="clear-btn" *ngIf="filter.creatorName" (click)="resetFilter()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <button class="filter-toggle-btn" (click)="openFilterOptions()" [class.active]="showFilterOptions"
+        title="Advanced filters">
+        <mat-icon>tune</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Advanced Filter Panel -->
+  <div class="filter-panel" *ngIf="showFilterOptions">
+    <div class="filter-row">
+      <div class="filter-field">
+        <label class="filter-label">Keyword</label>
+        <div class="search-wrap compact">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input class="search-input" placeholder="Search in content…" [(ngModel)]="filter.content" />
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Date from</label>
+        <input type="date" class="date-input" [(ngModel)]="filter.createdDate.gte" />
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label">Date to</label>
+        <input type="date" class="date-input" [(ngModel)]="filter.createdDate.lte" />
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <button class="btn-apply" (click)="applyFilter()">
+        <mat-icon>search</mat-icon> Search
+      </button>
+      <button class="btn-reset" (click)="resetFilter()">
+        <mat-icon>refresh</mat-icon> Reset
       </button>
     </div>
   </div>

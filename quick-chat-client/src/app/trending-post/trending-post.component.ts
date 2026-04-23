@@ -18,7 +18,6 @@ import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { sockJsUrl } from '../ws.util';
 import { PostService } from '../service/post.service';
-import { DEFAULT_POSTS } from '../mock-data';
 
 @Component({
   selector: 'app-trending-post',
@@ -45,7 +44,8 @@ export class TrendingPostComponent implements OnInit, OnChanges {
 
   private stompClient: any | undefined;
   private isSubscribed: boolean = false;
-  trendingPosts: any[] = [...DEFAULT_POSTS];
+  trendingPosts: any[] = [];
+  isLoading: boolean = true;
 
   constructor(private postService: PostService) { }
 
@@ -67,7 +67,8 @@ export class TrendingPostComponent implements OnInit, OnChanges {
       this.isSubscribed = true;
       this.stompClient.subscribe(`/topic/public/treding-post`, response => {
         const realPosts = JSON.parse(response.body);
-        this.trendingPosts = realPosts.length > 0 ? realPosts : [...DEFAULT_POSTS];
+        this.trendingPosts = realPosts;
+        this.isLoading = false;
       });
       this.postService.getMostLikedPost().subscribe();
     }, (error) => {

@@ -1,4 +1,9 @@
 <div class="posts-wrapper">
+  <div class="loading-state" *ngIf="isLoading">
+    <mat-icon>hourglass_empty</mat-icon>
+    <p>Loading trending posts…</p>
+  </div>
+
   <div class="post-card" *ngFor="let post of trendingPosts">
     <div class="post-header">
       <img class="post-avatar"
@@ -16,7 +21,7 @@
     </div>
   </div>
 
-  <div class="empty" *ngIf="trendingPosts.length === 0">
+  <div class="empty" *ngIf="!isLoading && trendingPosts.length === 0">
     <mat-icon>article</mat-icon>
     <p>No posts yet. Be the first to share something!</p>
   </div>

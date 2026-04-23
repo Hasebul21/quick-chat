@@ -98,6 +98,32 @@
   }
 }
 
+.loading-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #ccc;
+
+  mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    display: block;
+    margin: 0 auto 8px;
+    animation: spin 1.4s linear infinite;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: #bbb;
+    margin: 0;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* Trending Header */
 .fancy-title.trending-header {
   text-align: center;
