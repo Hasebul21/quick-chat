@@ -15,6 +15,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import { sockJsUrl } from '../ws.util';
 
 @Component({
   selector: 'app-profile-section',
@@ -57,7 +58,7 @@ export class ProfileSectionComponent implements OnChanges {
 
 
   connectSocket() {
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(sockJsUrl());
     this.stompClient = Stomp.over(socket);
     this.stompClient.connect({}, () => {
       this.isSubscribed = true;

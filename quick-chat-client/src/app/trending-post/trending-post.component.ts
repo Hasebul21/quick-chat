@@ -16,6 +16,7 @@ import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import { sockJsUrl } from '../ws.util';
 import { PostService } from '../service/post.service';
 
 @Component({
@@ -40,7 +41,7 @@ import { PostService } from '../service/post.service';
   styleUrl: './trending-post.component.scss'
 })
 export class TrendingPostComponent implements OnInit, OnChanges {
-   
+
   private stompClient: any | undefined;
   private isSubscribed: boolean = false;
   trendingPosts: any[] = [];
@@ -59,18 +60,18 @@ export class TrendingPostComponent implements OnInit, OnChanges {
   }
 
   connectSocket() {
-      const socket = new SockJS('http://localhost:8080/ws');
-      this.stompClient = Stomp.over(socket);
-      this.stompClient.connect({}, () => {
-        this.isSubscribed = true;
-        this.stompClient.subscribe(`/topic/public/treding-post`, response => {
-          this.trendingPosts = JSON.parse(response.body);
+    const socket = new SockJS(sockJsUrl());
+    this.stompClient = Stomp.over(socket);
+    this.stompClient.connect({}, () => {
+      this.isSubscribed = true;
+      this.stompClient.subscribe(`/topic/public/treding-post`, response => {
+        this.trendingPosts = JSON.parse(response.body);
 
-        });
-        this.postService.getMostLikedPost().subscribe();
-      }, (error) => {
-        console.log(error);
       });
-    }
+      this.postService.getMostLikedPost().subscribe();
+    }, (error) => {
+      console.log(error);
+    });
+  }
 
 }

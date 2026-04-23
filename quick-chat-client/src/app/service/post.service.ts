@@ -1,13 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
 
-  private url = 'http://localhost:8080'
+  private url = environment.apiBaseUrl;
   constructor(private http: HttpClient) { }
 
   persistPost(post: any): Observable<any> {
@@ -36,8 +37,8 @@ export class PostService {
 
   updateLikeCount(postId: string, count: number, isLike: boolean): Observable<any> {
     const body = { count, isLike };
-    return this.http.put<any>(`http://localhost:8080/posts/${postId}/likes`, body);
-}
+    return this.http.put<any>(`${this.url}/posts/${postId}/likes`, body);
+  }
 
   deletePost(id: string): Observable<any> {
     return this.http.delete<any>(`${this.url}/post/${id}`)

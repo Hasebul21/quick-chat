@@ -3,6 +3,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { sockJsUrl } from '../ws.util';
 import { ChatService } from '../service/chat.service';
 import { forkJoin, map } from 'rxjs';
 import { StompService } from '../service/stomp.service';
@@ -104,7 +105,7 @@ export class ChatBoxComponent implements OnChanges, OnInit {
   }
 
   connectSocket() {
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(sockJsUrl());
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {

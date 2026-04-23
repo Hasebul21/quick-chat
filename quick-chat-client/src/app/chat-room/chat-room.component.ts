@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { HomeComponent } from '../home/home.component';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import { sockJsUrl } from '../ws.util';
 import { StompService } from '../service/stomp.service';
 import { AuthService } from '../service/auth-service';
 import { NavbarComponent } from "../navbar/navbar.component";
@@ -47,7 +48,7 @@ export class ChatRoomComponent implements OnChanges, OnInit {
     if (this.stompClient && this.stompClient.connected) {
       return;
     }
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(sockJsUrl());
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {

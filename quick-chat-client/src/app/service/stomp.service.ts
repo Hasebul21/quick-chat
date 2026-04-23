@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client, Stomp } from '@stomp/stompjs';
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import SockJS from 'sockjs-client';
+import { sockJsUrl } from '../ws.util';
 
 @Injectable({
   providedIn: 'root'
@@ -19,11 +20,11 @@ export class StompService {
   constructor() {
   }
 
-  
-  connect(loginUser : any) {
+
+  connect(loginUser: any) {
     if (this.connected) return;
 
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(sockJsUrl());
     this.stompClient = Stomp.over(socket);
 
     this.stompClient.connect({}, () => {
@@ -41,7 +42,7 @@ export class StompService {
   }
 
 
-  private subscribeToTopics(loginUserId : any) {
+  private subscribeToTopics(loginUserId: any) {
     this.stompClient.subscribe(`/user/${loginUserId}/message/queue`, (message: any) => {
       this.privateMessages$.next(JSON.parse(message.body));
     });

@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Stomp } from '@stomp/stompjs';
 import { Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
+import { sockJsUrl } from '../ws.util';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketService {
 
-  private url = 'http://localhost:8080/ws'
+  private url = sockJsUrl();
   private stompClient: any | undefined;
   isConnected = false;
 
@@ -17,7 +18,7 @@ export class SocketService {
   onConnect(): Observable<boolean> {
     return new Observable<boolean>((observer) => {
       if (this.isConnected) {
-        observer.next(true); 
+        observer.next(true);
         observer.complete();
         return;
       }
@@ -65,9 +66,9 @@ export class SocketService {
       return;
     }
     this.stompClient.send('/app/addUser', {}, JSON.stringify(
-      { 
-        senderName: userName, 
-        status : 'SENT' 
+      {
+        senderName: userName,
+        status: 'SENT'
       }
     ))
   }
