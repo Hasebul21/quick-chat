@@ -4,22 +4,15 @@
 
 <div class="chat-container">
   <ul class="chat-box chatContainerScroll">
-    <li
-      *ngFor="let message of messages"
-      [ngClass]="{
+    <li *ngFor="let message of messages" [ngClass]="{
         'chat-left': message.direction === 'left',
         'chat-right': message.direction === 'right'
-      }"
-    >
+      }">
       <div class="chat-avatar">
-        <img
-          [src]="message.profileImage"
-          alt="User Avatar"
-        />
-        <div
-          class="chat-name"
-          [ngClass]="{ 'font-weight-bold': message.direction === 'left' }"
-        >
+        <img [src]="message.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'"
+          (error)="$any($event.target).src='https://api.dicebear.com/7.x/avataaars/svg?seed=default'"
+          alt="User Avatar" />
+        <div class="chat-name" [ngClass]="{ 'font-weight-bold': message.direction === 'left' }">
           {{ message.userName }}
         </div>
       </div>
@@ -34,11 +27,7 @@
   </ul>
 
   <div class="message-input">
-    <input
-      class="form-control"
-      placeholder="Type your message here..."
-      [(ngModel)]="content"
-    />
+    <input class="form-control" placeholder="Type your message here..." [(ngModel)]="content" />
     <button class="send-btn" (click)="onMessageSent()">Send</button>
   </div>
 </div>

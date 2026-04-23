@@ -12,6 +12,7 @@ import { sockJsUrl } from '../ws.util';
 import { StompService } from '../service/stomp.service';
 import { AuthService } from '../service/auth-service';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { DEFAULT_USERS } from '../mock-data';
 
 @Component({
   selector: 'app-chat-room',
@@ -25,7 +26,7 @@ export class ChatRoomComponent implements OnChanges, OnInit {
   isSelected = false;
   userName: string | undefined;
   userEmail: string | undefined;
-  activeUsers: any[] = [];
+  activeUsers: any[] = [...DEFAULT_USERS];
   loginUser: any | undefined;
   @Input() selectedUser: any;
   login = false;
@@ -56,7 +57,15 @@ export class ChatRoomComponent implements OnChanges, OnInit {
       this.isConnected = true;
       this.stompClient.subscribe(`/topic/public/activeUsers`, response => {
         console.log(response);
-        this.activeUsers = [...JSON.parse(response.body)];
+        const realUsers: any[] = JSON.parse(response.body);
+        // Merge real users with defaults (always keep defaults visible)
+        const merged = [...realUsers];
+        for (const defaultUser of DEFAULT_USERS) {
+          if (!merged.find(u => u.id === defaultUser.id)) {
+            merged.push(defaultUser);
+          }
+        }
+        this.activeUsers = merged;
       });
 
       this.stompClient.send('/app/chat/join', {}, JSON.stringify({

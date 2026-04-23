@@ -1,6 +1,8 @@
 <div class="users-container">
   <div class="welcome-container">
-    <img class="user-avatar" [src]="loginUser?.profileImage" alt="User avatar" />
+    <img class="user-avatar"
+      [src]="loginUser?.profileImage || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + loginUser?.userName"
+      (error)="onImgError($event)" alt="User avatar" />
     <p class="welcome-message">Hi {{ loginUser.userName }}, welcome to QuickChat!</p>
   </div>
   <!-- Search Box -->
@@ -15,19 +17,19 @@
 
   <!-- User List -->
   <ul class="users-list">
-  <ng-container *ngFor="let activeUser of activeUsers">
-    <ng-container *ngIf="activeUser.userEmail !== loginUser.userEmail">
-      <li class="user-item" (click)="selectUser(activeUser)">
-        <div class="user-avatar">
-          <img [src]="'data:image/jpeg;base64,' + activeUser?.profileImage" alt="User avatar" />
-          <span class="status online"></span>
-        </div>
-        <div class="user-details">
-          <span class="name">{{ activeUser.userName }}</span>
-          <span class="time">15/02/2019</span>
-        </div>
-      </li>
+    <ng-container *ngFor="let activeUser of activeUsers">
+      <ng-container *ngIf="activeUser.userEmail !== loginUser.userEmail">
+        <li class="user-item" (click)="selectUser(activeUser)">
+          <div class="user-avatar">
+            <img [src]="getProfileImageSrc(activeUser)" (error)="onImgError($event)" alt="User avatar" />
+            <span class="status online"></span>
+          </div>
+          <div class="user-details">
+            <span class="name">{{ activeUser.userName }}</span>
+            <span class="time">15/02/2019</span>
+          </div>
+        </li>
+      </ng-container>
     </ng-container>
-  </ng-container>
-</ul>
+  </ul>
 </div>

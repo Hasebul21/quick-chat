@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { SocketService } from '../service/socket.service';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import { DEFAULT_AVATAR } from '../mock-data';
 
 @Component({
   selector: 'app-user-status',
@@ -29,5 +30,19 @@ export class UserStatusComponent implements OnChanges {
 
   selectUser(selectedUser: any) {
     this.selectedUserEvent.emit(selectedUser);
+  }
+
+  getProfileImageSrc(user: any): string {
+    if (!user?.profileImage) {
+      return DEFAULT_AVATAR;
+    }
+    if (user.profileImage.startsWith('http') || user.profileImage.startsWith('data:')) {
+      return user.profileImage;
+    }
+    return `data:image/jpeg;base64,${user.profileImage}`;
+  }
+
+  onImgError(event: Event): void {
+    (event.target as HTMLImageElement).src = DEFAULT_AVATAR;
   }
 }
