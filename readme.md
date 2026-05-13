@@ -113,15 +113,3 @@ This will spin up the necessary containers for Spring Boot, PostgreSQL, Redis, a
 - **POST /api/auth/register**: Register a new user
 - **POST /api/auth/login**: Log in with user credentials
 
-### Chat
-
-- **GET /api/chats/{userId}/{receiverId}**: Get chat history between two users.
-- **POST /api/chats/send**: Send a message to a user .
-
-### Posts
-
-- **GET /api/post/all**: Get all posts.
-- **POST /api/post/create**: Create a new post.
-- **PUT /api/post/update/{id}**: Update a post.
-- **DELETE /api/post/delete/{id}**: Delete a post.
-- **GET /api/post/search?query=**: Full-text search posts via Elasticsearch.
