@@ -4,29 +4,26 @@ A real-time chat and social platform built with Spring Boot, Angular, PostgreSQL
 
 ## Features
 
-- **Real-time Chat**: Bidirectional communication using WebSockets for instant messaging.
-- **User Authentication**: Login and registration features for user management.
-- **Message Search**: Powered by Elasticsearch for quick and efficient message retrieval.
+- **Real-time Chat**: Bidirectional communication using WebSockets (STOMP over SockJS) for instant messaging.
+- **User Authentication**: Login and registration with session-based auth.
+- **Post Feed**: Create, like, and browse posts with a social feed interface.
+- **User Profiles**: Rich profiles with image upload, bio, and portfolio links.
+- **Message & Post Search**: Powered by Elasticsearch for fast full-text retrieval.
 - **Performance Optimization**: In-memory caching with Redis to improve application speed.
-- **Responsive Design**: Built with Angular for a responsive user interface.
-- **Dockerized Deployment**: Easily deployable using Docker for consistency across environments.
+- **Responsive Design**: Built with Angular Material and Bootstrap for a responsive UI.
+- **Cloud Deployment**: Backend on Railway, frontend on Vercel.
 
 ## Tech Stack
 
-- **Backend**: Spring Boot
-- **Frontend**: Angular, TypeScript
-- **Database**: PostgreSQL
-- **Search Engine**: Elasticsearch
-- **Caching**: Redis
-- **Deployment**: Docker
-
-## 🛠 Tech Stack Overview
-
-- **Elasticsearch** – Enables full-text search functionality for chat messages.  
-- **WebSocket** – Powers real-time, bidirectional communication for instant messaging.  
-- **Redis** – Used for caching active users and temporarily storing messages. A scheduled cron job persists these messages to the database.  
-- **Spring Boot & Angular** – Backend and frontend frameworks for developing the application’s server-side logic and user interface.  
-- **PostgreSQL** – Serves as the primary relational database for storing user data and chat history.
+| Layer | Technology |
+|---|---|
+| Backend | Spring Boot 2.7 (Java 17) |
+| Frontend | Angular 19, TypeScript, SCSS |
+| Database | PostgreSQL |
+| Search | Elasticsearch |
+| Caching | Redis |
+| Real-time | WebSocket (STOMP / SockJS) |
+| Deployment | Railway (backend), Vercel (frontend), Docker Compose (local) |
 
 
 ## Requirements
@@ -50,9 +47,9 @@ Before you start, ensure you have the following installed on your machine:
     cd quick-chat
     ```
 
-2. Navigate to the `backend` directory:
+2. Navigate to the backend directory:
     ```bash
-    cd backend
+    cd quick-chat-backend/quickChat
     ```
 
 3. Configure application properties (e.g., database connection, Elasticsearch):
@@ -67,9 +64,9 @@ Before you start, ensure you have the following installed on your machine:
 
 ### Frontend Setup (Angular)
 
-1. Navigate to the `frontend` directory:
+1. Navigate to the frontend directory:
     ```bash
-    cd ../frontend
+    cd quick-chat-client
     ```
 
 2. Install dependencies:
@@ -116,7 +113,3 @@ This will spin up the necessary containers for Spring Boot, PostgreSQL, Redis, a
 - **POST /api/auth/register**: Register a new user
 - **POST /api/auth/login**: Log in with user credentials
 
-### Chat
-
-- **GET /api/chats/{userId}/{receiverId}**: Get chat history between two users.
-- **POST /api/chats/send**: Send a message to a user.
