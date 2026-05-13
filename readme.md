@@ -116,7 +116,7 @@ This will spin up the necessary containers for Spring Boot, PostgreSQL, Redis, a
 ### Chat
 
 - **GET /api/chats/{userId}/{receiverId}**: Get chat history between two users.
-- **POST /api/chats/send**: Send a message to a user.
+- **POST /api/chats/send**: Send a message to a user .
 
 ### Posts
 
